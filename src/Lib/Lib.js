@@ -112,18 +112,18 @@ async function getData(socket, data) {
 		ind[e.from.toString()] = e.index;
 	});
 	console.log("data from getDataFromDb", senddata);
-	console.log("the data game: ", data.datanew.game);
+	console.log("ind", ind);
 	finaldata = { senddata: senddata, data: data.dataall, indexes: ind};
 	io.in(data.datanew.game).emit("DataFromDb", finaldata);
 }
 async function getDataForEnd(socket, data) {
 	console.log("socket.id:", socket.id);
 	console.log("data get for init", data);
-	searchdata = await Text.find({ game: data });
+	searchdata = await Text.find({ game: data.data.game });
 	console.log("data from getDataFromDb END", searchdata);
 	finaldata = { data: searchdata };
-	io.in(data).emit("getDataForEnd", finaldata);
-	await Text.deleteMany({ game: data });
+	io.in(data.data.game).emit("getDataForEnd", finaldata);
+	await Text.deleteMany({ game: data.data.game });
 }
 module.exports = {
 	bodyparser,

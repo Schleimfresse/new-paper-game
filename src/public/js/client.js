@@ -1,14 +1,6 @@
 // on success - start -
 SOCKET.on("ActiveLobbyDataRequest", (data) => {
-	if (data.length != 0) {
-		OPENLOBBYS.style.display = "block";
-		OPENLOBBYS.children[0].innerHTML = "";
-		for (object of data) {
-			if (object.icon) {
-				OPENLOBBYS.children[0].innerHTML += `<span>${object.name}</span><br />`;
-			}
-		}
-	}
+	ActiveLobbyDataRequest(data);
 });
 
 SOCKET.on("connect", () => {
@@ -16,17 +8,7 @@ SOCKET.on("connect", () => {
 });
 
 SOCKET.on("success", (data) => {
-	document.title = "Lobby | Paper Game";
-	FORM.style.display = "none";
-	PREROOM.style.display = "block";
-	FORMCREATE.style.display = "none";
-	PREROOM.style.display = "block";
-	ROOMNO.textContent = `You are in ${data.room}'s lobby`;
-	Systemdata = { message: `${data.name} has joined the lobby`, lobby: data.room };
-	SystemMessage(Systemdata);
-	SOCKET.emit("SystemMessage", Systemdata);
-	createElement(data, true);
-	SOCKET.emit("NewUserUpdateOtherClients", data);
+	success(data);
 });
 // on success - end -
 
@@ -84,47 +66,31 @@ SOCKET.on("createOtherOnlineUsers", (data) => {
 	}
 });
 
-SOCKET.on("startbt", () => {
-	STARTBT.setAttribute("id", "startbt");
-	STARTBT.setAttribute("class", "bt-small");
-	STARTBT.innerHTML = "Start";
-	PREROOM.appendChild(STARTBT);
+SOCKET.on("START_BT", () => {
+	START_BT.setAttribute("id", "START_BT");
+	START_BT.setAttribute("class", "bt-small");
+	START_BT.innerHTML = "Start";
+	PREROOM.appendChild(START_BT);
 });
+
 SOCKET.on("fail", (data) => {
-	if (!(LASTCLICK >= Date.now() - 3400)) {
-		if (data.boolean) {
-			FAIL.innerHTML = data.message;
-			FAIL.style.visibility = "visible";
-			FAIL.classList.add("transition");
-			setTimeout(() => {
-				FAIL.classList.remove("transition");
-				FAIL.style.visibility = "hidden";
-			}, 3000);
-		} else if (!data.boolean) {
-			FAILCREATE.innerHTML = data.message;
-			FAILCREATE.style.visibility = "visible";
-			FAILCREATE.classList.add("transition");
-			setTimeout(() => {
-				FAILCREATE.classList.remove("transition");
-				FAILCREATE.style.visibility = "hidden";
-			}, 3000);
-		}
-		LASTCLICK = Date.now();
-	}
+	fail(data);
 });
+
 SOCKET.on("terminate", () => {
 	window.open("/", "_self");
 });
+
 SOCKET.on("reset", () => {
 	PREROOM.style.display = "none";
 	JCSELC.style.display = "flex";
 });
+
 SOCKET.on("endGame", (data) => {
-	endGame();
+	endGame(data);
 });
+
 SOCKET.on("startNewRound", (r) => {
 	startNewRound(r);
 });
 // client <- server - end -
-
-// Extra content

@@ -15,7 +15,7 @@ const FAIL = document.getElementById("fail");
 const FAILCREATE = document.getElementById("failCreate");
 const NAMEJOIN = document.getElementById("name");
 const ROOMNO = document.getElementById("RoomNo");
-const STARTBT = document.createElement("button");
+const START_BT = document.createElement("button");
 const BACKTOFORM = document.getElementById("backToForm");
 const OPENLOBBYS = document.getElementById("openLobbys");
 const CHATAREA = document.getElementById("chatarea");
@@ -93,33 +93,17 @@ function updateReadyPLayers(data) {
 		}, 2000);
 	}
 }
-/*function updateRound() {
-	r++;
-	GAMETEXTSUBMIT.removeAttribute("disabled");
-	if (r === 7) {
-		ROUND.innerText = "End!";
-		
-		endGame();
-	} else {
-		startNewRound();
-		ROUND.innerText = r;
-	}
-}*/
+
 function getInfo(input) {
 	if (input == undefined) {
-		let getinfo = GAMETEXTAREA.className;
-		const fromSplited = getinfo.split(" ");
-		from = fromSplited[0];
-		parseInt(from);
+		game = sessionStorage.getItem("lobby");
+		from = sessionStorage.getItem("from");
 		from++;
-		game = fromSplited[1];
 		return (data = { from: from, game: game, round: r - 1 });
 	} else if (input != undefined) {
-		let getinfo = GAMETEXTAREA.className;
-		const fromSplited = getinfo.split(" ");
-		from = fromSplited[0];
-		game = fromSplited[1];
-		index = sessionStorage.getItem("index");
+		game = sessionStorage.getItem("lobby");
+		from = sessionStorage.getItem("from");
+		index = sessionStorage.getItem("name");
 		return (data = { data: { text: input, from: from, game: game, round: null }, index: index });
 	}
 }
@@ -129,24 +113,118 @@ function showNext(data) {
 }
 
 function fail(data) {
-	if (!(LASTCLICK >= Date.now() - 1000)) {
+	if (!(LASTCLICK >= Date.now() - 3400)) {
 		if (data.boolean) {
 			FAIL.innerHTML = data.message;
 			FAIL.style.visibility = "visible";
+			FAIL.classList.add("transition");
+			setTimeout(() => {
+				FAIL.classList.remove("transition");
+				FAIL.style.visibility = "hidden";
+			}, 3000);
 		} else if (!data.boolean) {
 			FAILCREATE.innerHTML = data.message;
 			FAILCREATE.style.visibility = "visible";
+			FAILCREATE.classList.add("transition");
+			setTimeout(() => {
+				FAILCREATE.classList.remove("transition");
+				FAILCREATE.style.visibility = "hidden";
+			}, 3000);
 		}
 		LASTCLICK = Date.now();
 	}
 }
 
-function giveIndex(ElementIndex, Amount) {
-	if (ElementIndex == Amount) {
-		sessionStorage.setItem("index", 1);
-	} else if (ElementIndex == 1) {
-		sessionStorage.setItem("index", Amount);
-	} else if (ElementIndex < Amount) {
-		sessionStorage.setItem("index", ElementIndex++);
+function StartGame(data) {
+	document.title = "Paper Game";
+	HEADER.style.display = "none";
+	PREROOM.style.display = "none";
+	GAMESECTION.style.display = "flex";
+	const Element = data.gameIsOn.find((e) => {
+		return e.name == data.users[SOCKET.id];
+	});
+	console.log("Element", Element);
+	sessionStorage.setItem("lobby", Element.lobby);
+	sessionStorage.setItem("name", Element.name);
+	if (Element.playerindex === data.all) {
+		sessionStorage.setItem("from", 1);
+	} else if (Element.playerindex < data.all) {
+		sessionStorage.setItem("from", ++Element.playerindex);
+	}
+	ALLUSERS.innerText = data.all;
+}
+
+function startNewRound(r) {
+	ROUND.innerText = r;
+	SOCKET.emit("getLength", getInfo(undefined).game);
+	SOCKET.once("getLength", (data) => {
+		datanew = {
+			game: getInfo(undefined).game,
+			round: getInfo(undefined).round,
+			from: getInfo(undefined).from,
+		};
+		if (datanew.from > data.all) {
+			data = { datanew: datanew, dataall: data.all };
+			datanew.from = 1;
+			SOCKET.emit("getDataFromDb", data);
+		}
+	});
+}
+
+function endGame() {
+	sessionStorage.clear();
+	ROUND.innerText = "End!";
+	SOCKET.emit("getDataForEnd", data);
+	GAMESECTION.style.display = "none";
+	ENDSECTION.style.display = "flex";
+	SOCKET.on("getDataForEnd", (data) => {
+		console.log("getData", data);
+		data.data.forEach((e) => {
+			ENDCONTENT.innerText = e.data.text;
+		});
+	});
+}
+
+function DataFromDB(data) {
+	datanew = {
+		from: getInfo(undefined).from,
+		round: getInfo(undefined).round,
+	};
+	const getNeededObj = data.senddata.find((e) => {
+		return e.from == datanew.from && e.round == datanew.round;
+	});
+	GAMETEXTAREA.classList.remove[2];
+	console.log("the indexes", data.indexes);
+	console.log("the .from", datanew.from);
+	const filteredIndexes = Object.fromEntries(
+		Object.entries(data.indexes).filter(([key, value]) => key === datanew.from.toString())
+	);
+	GAMETEXTAREA.classList.add(Object.values(filteredIndexes));
+	SHOWCASE.innerText = getNeededObj.text;
+}
+
+function success(data) {
+	document.title = "Lobby | Paper Game";
+	FORM.style.display = "none";
+	PREROOM.style.display = "block";
+	FORMCREATE.style.display = "none";
+	PREROOM.style.display = "block";
+	ROOMNO.textContent = `You are in ${data.room}'s lobby`;
+	Systemdata = { message: `${data.name} has joined the lobby`, lobby: data.room };
+	SystemMessage(Systemdata);
+	SOCKET.emit("SystemMessage", Systemdata);
+	createElement(data, true);
+	SOCKET.emit("NewUserUpdateOtherClients", data);
+}
+
+function ActiveLobbyDataRequest(data) {
+	if (data.length != 0) {
+		OPENLOBBYS.style.display = "block";
+		OPENLOBBYS.children[0].innerHTML = "";
+		for (object of data) {
+			if (object.icon) {
+				OPENLOBBYS.children[0].innerHTML += `<span>${object.name}</span><br />`;
+			}
+		}
 	}
 }

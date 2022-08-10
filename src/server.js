@@ -1,5 +1,5 @@
 // Initial - start -
-const Lib = require("./Lib/VariableDefinitions.js");
+const Lib = require("./Lib/Lib.js");
 Lib.static;
 Lib.bodyparsing;
 Lib.listen;
@@ -69,7 +69,7 @@ function connected(socket) {
 			icon: true,
 		};
 		socket.emit("success", datacreate);
-		socket.emit("startbt");
+		socket.emit("START_BT");
 		console.log("Just came: ", data);
 		Lib.users[socket.id] = data;
 		Lib.userToRoom.push({
@@ -138,7 +138,7 @@ function connected(socket) {
 	});
 
 	socket.on("StartGame", (data) => {
-		Lib.rounds[data.lobby] = 1;
+		Lib.rounds[data.lobby] = 3;
 		Lib.removeStartedRoomFromArray(Lib.userToRoom, data);
 		const currentRoomUsers = Lib.gameIsOn.filter((e) => {
 			return e.lobby == data.lobby;
@@ -160,7 +160,7 @@ function connected(socket) {
 	socket.on("updateRound", (data) => {
 		console.log("159", data);
 		Lib.rounds[data.object.data.game]++;
-		if (Lib.rounds[data.object.game] === 7) {
+		if (Lib.rounds[data.object.data.game] === 7) {
 			socket.to(data.object.data.game).emit("endGame", data);
 		} else {
 			socket.to(data.object.data.game).emit("startNewRound", Lib.rounds[data.object.data.game]);
