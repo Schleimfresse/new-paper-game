@@ -4,6 +4,7 @@ const contentSchema = new mongoose.Schema({
     text: String,
     to: Number,
     from: Number,
+    fromStr: String,
     round: Number,
     game: String,
     index: String,

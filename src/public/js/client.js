@@ -88,12 +88,4 @@ SOCKET.on("reset", () => {
 	PREROOM.style.display = "none";
 	JCSELC.style.display = "flex";
 });
-
-SOCKET.on("endGame", (data) => {
-	endGame(data);
-});
-
-SOCKET.on("startNewRound", (data) => {
-	startNewRound(data);
-});
 // client <- server - end -

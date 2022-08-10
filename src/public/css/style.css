@@ -458,7 +458,7 @@ header #copyrights {
 	box-shadow: var(--shadow);
 	z-index: 5;
 }
-#end-card-content-footer{
+#end-card-content-footer {
 	position: absolute;
 	bottom: 0;
 	min-width: 100%;
@@ -469,17 +469,23 @@ header #copyrights {
 	justify-content: center;
 	box-sizing: content-box;
 }
-#end-card-next{
+#end-card-next {
 	margin: 0;
 }
-#end-card-content{
-	padding: 1em;
+#end-card-content {
+	padding: 0.5em;
 }
-.end-card-content-item{
+.end-card-content-item {
 	padding-bottom: 1em;
+	min-width: 100%;
 	display: inline-block;
 }
-#end-card-content{
+#end-card-content {
 	min-width: 100%;
 	height: fit-content;
+}
+.author{
+	color: rgb(163, 163, 163);
+	right: 10px;
+    position: absolute;
 }

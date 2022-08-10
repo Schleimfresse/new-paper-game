@@ -79,6 +79,7 @@ async function addContentToDb(data) {
 		text: data.data.text,
 		to: parseInt(data.data.to),
 		from: parseInt(data.data.from),
+		fromStr: data.index,
 		round: data.data.round,
 		game: data.data.game,
 		index: data.index,
@@ -127,14 +128,18 @@ async function getData(data) {
 	};
 	io.in(data.object.data.game).emit("startNewRound", finaldata);
 }
-async function getDataForEnd(socket, data) {
-	console.log("socket.id:", socket.id);
+async function getDataForEnd(data) {
 	console.log("data get for init", data);
-	searchdata = await Text.find({ game: data.data.game });
-	console.log("data from getDataFromDb END", searchdata);
-	io.in(data.data.game).emit("getDataForEnd", searchdata);
-	await Text.deleteMany({ game: data.data.game });
+	const currentRoom = gameIsOn.filter((e) => {
+		return e.lobby == data.object.data.game;
+	});
+	searchdata = await Text.find({ game: data.object.data.game });
+	finaldata = {data: searchdata, all: currentRoom.length, curRoomUsers: currentRoom}
+	console.log("data from getDataFromDb END", finaldata);
+	io.in(data.object.data.game).emit("endGame", finaldata);
+	await Text.deleteMany({ game: data.object.data.game });
 }
+
 module.exports = {
 	bodyparser,
 	app,
