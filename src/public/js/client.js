@@ -44,7 +44,6 @@ FORMCREATE.addEventListener("submit", () => {
 	SOCKET.emit("create", name);
 });
 
-ENDNEXT.addEventListener("click", () => {});
 // EventListner - end -
 
 // client <- server - start -
@@ -69,8 +68,12 @@ SOCKET.on("createOtherOnlineUsers", (data) => {
 SOCKET.on("START_BT", () => {
 	START_BT.setAttribute("id", "START_BT");
 	START_BT.setAttribute("class", "bt-small");
-	START_BT.innerHTML = "Start";
+	START_BT.innerText = "Start"
 	PREROOM.appendChild(START_BT);
+	ENDNEXT.setAttribute("id", "end-card-next");
+	ENDNEXT.setAttribute("class", "bt-small");
+	ENDNEXT.innerText = "Next";
+	ENDFOOTER.appendChild(ENDNEXT);
 });
 
 SOCKET.on("fail", (data) => {
@@ -90,7 +93,7 @@ SOCKET.on("endGame", (data) => {
 	endGame(data);
 });
 
-SOCKET.on("startNewRound", (r) => {
-	startNewRound(r);
+SOCKET.on("startNewRound", (data) => {
+	startNewRound(data);
 });
 // client <- server - end -

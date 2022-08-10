@@ -40,7 +40,7 @@ START_BT.addEventListener("click", () => {
 			};
 			SystemMessage(Systemdata);
 		} else if (data.amount >= 4) {
-			STARTBT.setAttribute("disabled", "disabled");
+			START_BT.setAttribute("disabled", "disabled");
 			Systemdata = {
 				message: `${data.user} has started the game which will start in 5 seconds`,
 				lobby: data.lobby,

@@ -434,6 +434,7 @@ header #copyrights {
 	border-left: none;
 	background-clip: padding-box;
 	border-radius: 0 10px 10px 0;
+	min-width: 20vw;
 }
 
 .end-card-users {

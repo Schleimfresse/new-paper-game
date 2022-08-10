@@ -85,26 +85,29 @@ function updateReadyPLayers(data) {
 	i++;
 	USERSREADY.innerText = i;
 	console.log("gotten datsa endpoint", data);
-	if (i == data.quantity) {
-		setTimeout(() => {
-			i = 0;
-			USERSREADY.innerText = i;
-			SOCKET.emit("updateRound", data);
-		}, 2000);
-	}
+	if (!(i == data.quantity)) return;
+	setTimeout(() => {
+		i = 0;
+		USERSREADY.innerText = i;
+		if (!(parseInt(sessionStorage.getItem("from")) === 1)) return;
+		SOCKET.emit("updateRound", data);
+	}, 2000);
 }
 
 function getInfo(input) {
 	if (input == undefined) {
 		game = sessionStorage.getItem("lobby");
-		from = sessionStorage.getItem("from");
-		from++;
-		return (data = { from: from, game: game, round: r - 1 });
+		to = sessionStorage.getItem("to");
+		return (data = { to: to, game: game });
 	} else if (input != undefined) {
 		game = sessionStorage.getItem("lobby");
-		from = sessionStorage.getItem("from");
+		to = sessionStorage.getItem("to");
 		index = sessionStorage.getItem("name");
-		return (data = { data: { text: input, from: from, game: game, round: null }, index: index });
+		from = sessionStorage.getItem("from");
+		return (data = {
+			data: { text: input, to: to, from: from, game: game, round: null },
+			index: index,
+		});
 	}
 }
 function showNext(data) {
@@ -146,29 +149,23 @@ function StartGame(data) {
 	console.log("Element", Element);
 	sessionStorage.setItem("lobby", Element.lobby);
 	sessionStorage.setItem("name", Element.name);
+	sessionStorage.setItem("from", Element.playerindex);
 	if (Element.playerindex === data.all) {
-		sessionStorage.setItem("from", 1);
+		sessionStorage.setItem("to", 1);
 	} else if (Element.playerindex < data.all) {
-		sessionStorage.setItem("from", ++Element.playerindex);
+		sessionStorage.setItem("to", ++Element.playerindex);
 	}
 	ALLUSERS.innerText = data.all;
 }
 
-function startNewRound(r) {
-	ROUND.innerText = r;
-	SOCKET.emit("getLength", getInfo(undefined).game);
-	SOCKET.once("getLength", (data) => {
-		datanew = {
-			game: getInfo(undefined).game,
-			round: getInfo(undefined).round,
-			from: getInfo(undefined).from,
-		};
-		if (datanew.from > data.all) {
-			data = { datanew: datanew, dataall: data.all };
-			datanew.from = 1;
-			SOCKET.emit("getDataFromDb", data);
-		}
+function startNewRound(data) {
+	ROUND.innerText = data.rounds.curRound;
+	GAMETEXTSUBMIT.setAttribute("disabled", false);
+	const getNeededObj = data.senddata.find((e) => {
+		return sessionStorage.getItem('from') == e.to && e.round == data.rounds.prevRound;
 	});
+	console.log('getNeededObj',getNeededObj)
+	SHOWCASE.innerText = getNeededObj.text;
 }
 
 function endGame() {
@@ -179,28 +176,17 @@ function endGame() {
 	ENDSECTION.style.display = "flex";
 	SOCKET.on("getDataForEnd", (data) => {
 		console.log("getData", data);
-		data.data.forEach((e) => {
-			ENDCONTENT.innerText = e.data.text;
+		ENDNEXT.addEventListener("click", () => {
+			if (data.length != 0) {
+				console.log("trigger");
+				ENDCONTENT.innerHTML += `<span class="end-card-content-item">${data[0].text}</span>`;
+				data.shift();
+			}
+			/*else if () {
+
+			}*/
 		});
 	});
-}
-
-function DataFromDB(data) {
-	datanew = {
-		from: getInfo(undefined).from,
-		round: getInfo(undefined).round,
-	};
-	const getNeededObj = data.senddata.find((e) => {
-		return e.from == datanew.from && e.round == datanew.round;
-	});
-	GAMETEXTAREA.classList.remove[2];
-	console.log("the indexes", data.indexes);
-	console.log("the .from", datanew.from);
-	const filteredIndexes = Object.fromEntries(
-		Object.entries(data.indexes).filter(([key, value]) => key === datanew.from.toString())
-	);
-	GAMETEXTAREA.classList.add(Object.values(filteredIndexes));
-	SHOWCASE.innerText = getNeededObj.text;
 }
 
 function success(data) {
@@ -218,13 +204,11 @@ function success(data) {
 }
 
 function ActiveLobbyDataRequest(data) {
-	if (data.length != 0) {
-		OPENLOBBYS.style.display = "block";
-		OPENLOBBYS.children[0].innerHTML = "";
-		for (object of data) {
-			if (object.icon) {
-				OPENLOBBYS.children[0].innerHTML += `<span>${object.name}</span><br />`;
-			}
-		}
+	if (data.length === 0) return;
+	OPENLOBBYS.style.display = "block";
+	OPENLOBBYS.children[0].innerHTML = "";
+	for (object of data) {
+		if (!object.icon) return;
+		OPENLOBBYS.children[0].innerHTML += `<span>${object.name}</span><br />`;
 	}
 }

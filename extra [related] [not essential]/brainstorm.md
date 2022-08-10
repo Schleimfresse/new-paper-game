@@ -6,3 +6,4 @@
 ## index? && from? [+]
 
 ## dataflow controling && cleaning
+## function DataFromDB(data) {} - remaster!

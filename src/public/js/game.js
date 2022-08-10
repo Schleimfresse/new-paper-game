@@ -13,7 +13,3 @@ SOCKET.on("StartGame", (data) => {
 SOCKET.on("updateReadyPlayers", (data) => {
 	updateReadyPLayers(data);
 });
-
-SOCKET.on("DataFromDb", (data) => {
-	DataFromDB(data);
-});

@@ -82,9 +82,7 @@ function connected(socket) {
 	});
 
 	socket.on("addContentToDb", (senddata) => {
-		console.log("server data", senddata);
 		senddata.data.round = Lib.rounds[senddata.data.game];
-		console.log("server data updated", senddata);
 		Lib.addContentToDb(senddata);
 		const quantity = Lib.gameIsOn.filter((e) => {
 			return e.lobby == senddata.data.game;
@@ -138,7 +136,7 @@ function connected(socket) {
 	});
 
 	socket.on("StartGame", (data) => {
-		Lib.rounds[data.lobby] = 3;
+		Lib.rounds[data.lobby] = 1;
 		Lib.removeStartedRoomFromArray(Lib.userToRoom, data);
 		const currentRoomUsers = Lib.gameIsOn.filter((e) => {
 			return e.lobby == data.lobby;
@@ -161,13 +159,13 @@ function connected(socket) {
 		console.log("159", data);
 		Lib.rounds[data.object.data.game]++;
 		if (Lib.rounds[data.object.data.game] === 7) {
-			socket.to(data.object.data.game).emit("endGame", data);
+			Lib.io.in(data.object.data.game).emit("endGame", data);
 		} else {
-			socket.to(data.object.data.game).emit("startNewRound", Lib.rounds[data.object.data.game]);
+			//senddata = {quantity: data.quantity, round: Lib.rounds[data.object.data.game]}
+			//Lib.io.in(data.object.data.game).emit("startNewRound", senddata);
+
+			Lib.getData(data, Lib.rounds[data.object.data.game]);
 		}
-	});
-	socket.on("getDataFromDb", (data) => {
-		Lib.getData(socket, data);
 	});
 	socket.on("getDataForEnd", (data) => {
 		Lib.getDataForEnd(socket, data);

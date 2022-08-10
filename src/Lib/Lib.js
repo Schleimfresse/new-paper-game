@@ -77,6 +77,7 @@ function removeStartedRoomFromArray(array, data) {
 async function addContentToDb(data) {
 	let content = new Text({
 		text: data.data.text,
+		to: parseInt(data.data.to),
 		from: parseInt(data.data.from),
 		round: data.data.round,
 		game: data.data.game,
@@ -102,27 +103,36 @@ function removeAllUsersFromArray(userToRoom, dcuser) {
 	}
 	console.log("users", userToRoom);
 }
-async function getData(socket, data) {
+async function getData(data) {
 	ind = {};
-	console.log("socket.id:", socket.id);
-	console.log("data get for init", data.datanew);
-	senddata = await Text.find({ game: data.datanew.game, round: data.datanew.round });
+	console.log("init data", data);
+	senddata = await Text.find({
+		game: data.object.data.game,
+		round: rounds[data.object.data.game] - 1,
+	}); // Getting the data from the previous round, therefore the "rounds" variable must be reduced by one
 	inddata = senddata;
 	inddata.forEach((e) => {
-		ind[e.from.toString()] = e.index;
+		ind[e.to.toString()] = e.index;
 	});
 	console.log("data from getDataFromDb", senddata);
 	console.log("ind", ind);
-	finaldata = { senddata: senddata, data: data.dataall, indexes: ind};
-	io.in(data.datanew.game).emit("DataFromDb", finaldata);
+	finaldata = {
+		senddata: senddata,
+		data: data.dataall,
+		indexes: ind,
+		rounds: {
+			curRound: rounds[data.object.data.game],
+			prevRound: rounds[data.object.data.game] - 1,
+		},
+	};
+	io.in(data.object.data.game).emit("startNewRound", finaldata);
 }
 async function getDataForEnd(socket, data) {
 	console.log("socket.id:", socket.id);
 	console.log("data get for init", data);
 	searchdata = await Text.find({ game: data.data.game });
 	console.log("data from getDataFromDb END", searchdata);
-	finaldata = { data: searchdata };
-	io.in(data.data.game).emit("getDataForEnd", finaldata);
+	io.in(data.data.game).emit("getDataForEnd", searchdata);
 	await Text.deleteMany({ game: data.data.game });
 }
 module.exports = {
