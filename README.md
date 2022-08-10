@@ -4,7 +4,7 @@ A digital version of a game I play with my friends.
 
 ## Progress
 
-Still in progress; round about 70/100% [######----]
+Still in progress; round about 40/100%
 
 ## Changelog / added features
 - Chat for pre-lobby
