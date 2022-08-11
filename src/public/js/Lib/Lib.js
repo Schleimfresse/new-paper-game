@@ -36,7 +36,7 @@ const ENDSECTION = document.getElementById("end-section");
 const ENDNEXT = document.createElement("button");
 const ENDCONTENT = document.getElementById("end-card-content");
 const ENDFOOTER = document.getElementById("end-card-content-footer");
-const ENDCARDUSERS = document.getElementById('end-card-users')
+const ENDCARDUSERS = document.getElementById("end-card-users");
 const SPAN = document.createElement("span");
 const x = 5;
 let i = 0;
@@ -57,6 +57,7 @@ function IconChooser(data) {
 function BackToForm(data) {
 	PLAYERLIST.innerHTML = "";
 	CHATAREA.innerHTML = "";
+	ROOMNO.innerHTML = "";
 	SOCKET.emit("removeUserElement", data);
 	PREROOM.style.display = "none";
 	JCSELC.style.display = "block";
@@ -161,7 +162,7 @@ function StartGame(data) {
 
 function startNewRound(data) {
 	ROUND.innerText = data.rounds.curRound;
-	GAMETEXTSUBMIT.setAttribute("disabled", false);
+	GAMETEXTSUBMIT.removeAttribute("disabled");
 	const getNeededObj = data.senddata.find((e) => {
 		return sessionStorage.getItem("from") == e.to && e.round == data.rounds.prevRound;
 	});
@@ -170,24 +171,25 @@ function startNewRound(data) {
 }
 
 function endGame(data) {
-	console.log('ok', data.curRoomUsers);
+	console.log("ok", data.curRoomUsers);
 	for (e of data.curRoomUsers) {
-		ENDCARDUSERS.innerHTML += `<span class="end-card-users">${e.name}</span>`
+		ENDCARDUSERS.innerHTML += `<span class="end-card-users">${e.name}</span>`;
 	}
+	ENDCARDUSERS.children[0].classList.add("end-card-users-active");
 	sessionStorage.clear();
 	ROUND.innerText = "End!";
 	GAMESECTION.style.display = "none";
 	ENDSECTION.style.display = "flex";
-		console.log("getData", data);
-		ENDNEXT.addEventListener("click", () => {
-			if (data.data.length != 0) {
-				ENDCONTENT.innerHTML += `<div class="end-card-content-item"><span>${data.data[0].text}</span><br><span class="author">${data.data[0].fromStr}</span></div>`;
-				data.data.shift();
-			}
-			/*else if () {
+	console.log("getData", data);
+	ENDNEXT.addEventListener("click", () => {
+		if (data.data.length != 0) {
+			ENDCONTENT.innerHTML += `<div class="end-card-content-item"><span>${data.data[0].text}</span><br><span class="author">${data.data[0].fromStr}</span></div>`;
+			data.data.shift();
+		}
+		/*else if () {
 
 			}*/
-		});
+	});
 }
 
 function success(data) {
@@ -205,11 +207,21 @@ function success(data) {
 }
 
 function ActiveLobbyDataRequest(data) {
-	if (data.length === 0) return;
-	OPENLOBBYS.style.display = "block";
-	OPENLOBBYS.children[0].innerHTML = "";
-	for (object of data) {
-		if (!object.icon) return;
-		OPENLOBBYS.children[0].innerHTML += `<span>${object.name}</span><br />`;
+	if (!data.boolean) {
+		const elements = Array.from(OPENLOBBYS.children[0].children);
+		const result = elements.find((e) => {
+			return e.textContent.includes(data.data.name);
+		});
+		result.remove();
+	}
+	if (data.boolean) {
+		OPENLOBBYS.style.display = "block";
+		for (object of data.data) {
+			if (!object.icon) return;
+			OPENLOBBYS.children[0].innerHTML += `<span>${object.name}<br /></span>`;
+		}
+	}
+	if (!OPENLOBBYS.children[0].hasChildNodes()) {
+		OPENLOBBYS.style.display = "none";
 	}
 }

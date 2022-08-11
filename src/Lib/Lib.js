@@ -94,15 +94,13 @@ function checkName(data) {
 		return true;
 	}
 }
-function removeAllUsersFromArray(userToRoom, dcuser) {
+function removeAllUsersFromArray(dcuser) {
 	const indexOfObject = userToRoom.filter((e) => {
 		return e.lobby == dcuser.lobby;
 	});
-	console.log("index", indexOfObject.length);
 	for (i = indexOfObject.length - 1; i >= 0; i--) {
 		userToRoom.splice(indexOfObject[i], 1);
 	}
-	console.log("users", userToRoom);
 }
 async function getData(data) {
 	ind = {};

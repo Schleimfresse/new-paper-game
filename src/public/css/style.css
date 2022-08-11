@@ -453,10 +453,12 @@ header #copyrights {
 	padding-right: 1em;
 	min-width: 5em;
 	max-width: 10em;
+	box-shadow: inset -5px 0px 15px 0px rgb(0 0 0 / 20%);
 }
 .end-card-users-active {
 	box-shadow: var(--shadow);
 	z-index: 5;
+	box-shadow: unset;
 }
 #end-card-content-footer {
 	position: absolute;
@@ -474,6 +476,7 @@ header #copyrights {
 }
 #end-card-content {
 	padding: 0.5em;
+	overflow-y: auto;
 }
 .end-card-content-item {
 	padding-bottom: 1em;

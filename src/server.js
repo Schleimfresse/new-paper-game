@@ -78,7 +78,7 @@ function connected(socket) {
 			socketid: socket.id,
 			icon: true,
 		});
-		socket.broadcast.emit("ActiveLobbyDataRequest", Lib.userToRoom);
+		Lib.io.emit("ActiveLobbyDataRequest", { data: Lib.userToRoom, boolean: true });
 	});
 
 	socket.on("addContentToDb", (senddata) => {
@@ -92,19 +92,21 @@ function connected(socket) {
 	});
 
 	socket.on("removeUserElement", (data) => {
-		delete users[socket.id];
+		delete Lib.users[socket.id];
 		console.log("data", data);
+		socket.leave(data.lobby);
 		Lib.io.to(data.lobby).emit("removeUserElement", data);
 		if (data.user === data.lobby) {
+			Lib.io.emit("ActiveLobbyDataRequest", { data: { name: data.user }, boolean: false });
 			socket.leave(data.lobby);
-			Lib.removeAllUsersFromArray(userToRoom, data);
+			Lib.removeAllUsersFromArray(data);
 			Lib.io.to(data.lobby).emit("SystemMessage", {
 				message: `${data.user} left the lobby, the room will be terminated; you will be redirected shortly.`,
 			});
 			setTimeout(() => {
 				Lib.io.to(data.lobby).emit("terminate");
 				Lib.io.to(data.lobby).socketsLeave(data.lobby);
-				if (io.sockets.adapter.rooms.get(data.lobby) == undefined) {
+				if (Lib.io.sockets.adapter.rooms.get(data.lobby) == undefined) {
 					delete Lib.roomNo[data.lobby];
 				}
 			}, 5000);
@@ -117,7 +119,7 @@ function connected(socket) {
 	});
 
 	socket.on("ActiveLobbyDataRequest", () => {
-		socket.emit("ActiveLobbyDataRequest", Lib.userToRoom);
+		Lib.io.emit("ActiveLobbyDataRequest", { data: Lib.userToRoom, boolean: true });
 	});
 
 	socket.on("getInfoForChat", (data) => {
@@ -136,7 +138,7 @@ function connected(socket) {
 	});
 
 	socket.on("StartGame", (data) => {
-		Lib.rounds[data.lobby] = 6;
+		Lib.rounds[data.lobby] = 5;
 		Lib.removeStartedRoomFromArray(Lib.userToRoom, data);
 		const currentRoomUsers = Lib.gameIsOn.filter((e) => {
 			return e.lobby == data.lobby;
@@ -144,47 +146,52 @@ function connected(socket) {
 		Senddata = { gameIsOn: Lib.gameIsOn, users: Lib.users, all: currentRoomUsers.length };
 		Lib.io.in(data.lobby).emit("StartGame", Senddata);
 	});
+
 	socket.on("SystemMessage", (data) => {
 		socket.to(data.lobby).emit("SystemMessage", data);
 	});
+
 	socket.on("updateRound", (data) => {
 		console.log("159", data);
 		Lib.rounds[data.object.data.game]++;
 		if (Lib.rounds[data.object.data.game] === 7) {
 			Lib.getDataForEnd(data);
-			//Lib.io.in(data.object.data.game).emit("getDataForEnd");
 		} else {
 			Lib.getData(data, Lib.rounds[data.object.data.game]);
 		}
 	});
+
 	socket.on("getDataForEnd", (data) => {
 		Lib.getDataForEnd(data);
 	});
+	
 	socket.on("disconnect", () => {
 		console.log("DISCONNECTION for ", socket.id);
 		console.log("disconn user: ", Lib.users[socket.id]);
-		delete Lib.users[socket.id];
-		let dcuser = Lib.userToRoom.find(function (e) {
-			return e.socketid === socket.id;
-		});
+		let dcuser = Lib.users[socket.id];
 		if (dcuser != undefined) {
+			dcuser = Lib.userToRoom.find((e) => {
+				return e.name == dcuser;
+			});
 			Systemdata = { message: `${dcuser.name} has left the lobby` };
 			Lib.io.to(dcuser.lobby).emit("SystemMessage", Systemdata);
 			Lib.io.to(dcuser.lobby).emit("removeUserElement", { user: dcuser.name });
 			if (dcuser.name === dcuser.lobby) {
+				Lib.io.emit("ActiveLobbyDataRequest", { data: { name: dcuser.name }, boolean: false });
 				socket.leave(dcuser.lobby);
-				Lib.removeAllUsersFromArray(Lib.userToRoom, dcuser);
+				Lib.io.to(dcuser.lobby).socketsLeave(dcuser.lobby);
+				Lib.removeAllUsersFromArray(dcuser);
 				if (Lib.io.sockets.adapter.rooms.get(dcuser.lobby) == undefined) {
 					// When lobby is empty (dcuser.lobby), because all clients left and the room then gets deleted, the room gets removed from the array
 					delete Lib.roomNo[dcuser.lobby];
 				}
+				console.log("roomNo", Lib.roomNo);
 				Lib.io.to(dcuser.lobby).emit("SystemMessage", {
 					message: `${dcuser.name} disconnected, the room will be terminated; you will be redirected shortly.`,
 				});
 				setTimeout(() => {
 					Lib.io.to(dcuser.lobby).emit("terminate");
 				}, 5000);
-				Lib.io.to(dcuser.lobby).socketsLeave(dcuser.lobby);
 			} else {
 				socket.leave(dcuser.lobby);
 				Lib.removeDisconnectFromArray(Lib.userToRoom, socket);
@@ -193,6 +200,7 @@ function connected(socket) {
 				}
 			}
 		}
+		delete Lib.users[socket.id];
 	});
 }
 // Main content - end -
