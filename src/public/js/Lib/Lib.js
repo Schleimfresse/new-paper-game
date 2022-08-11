@@ -104,17 +104,13 @@ function getInfo(input) {
 	} else if (input != undefined) {
 		game = sessionStorage.getItem("lobby");
 		to = sessionStorage.getItem("to");
-		index = sessionStorage.getItem("name");
+		index = sessionStorage.getItem("index");
 		from = sessionStorage.getItem("from");
 		return (data = {
 			data: { text: input, to: to, from: from, game: game, round: null },
 			index: index,
 		});
 	}
-}
-function showNext(data) {
-	data.find({ game: data.game });
-	SPAN.innerHTML;
 }
 
 function fail(data) {
@@ -152,6 +148,7 @@ function StartGame(data) {
 	sessionStorage.setItem("lobby", Element.lobby);
 	sessionStorage.setItem("name", Element.name);
 	sessionStorage.setItem("from", Element.playerindex);
+	sessionStorage.setItem("index", Element.playerindex);
 	if (Element.playerindex === data.all) {
 		sessionStorage.setItem("to", 1);
 	} else if (Element.playerindex < data.all) {
@@ -166,6 +163,7 @@ function startNewRound(data) {
 	const getNeededObj = data.senddata.find((e) => {
 		return sessionStorage.getItem("from") == e.to && e.round == data.rounds.prevRound;
 	});
+	sessionStorage.setItem('index', getNeededObj.index);
 	console.log("getNeededObj", getNeededObj);
 	SHOWCASE.innerText = getNeededObj.text;
 }
@@ -176,6 +174,9 @@ function endGame(data) {
 		ENDCARDUSERS.innerHTML += `<span class="end-card-users">${e.name}</span>`;
 	}
 	ENDCARDUSERS.children[0].classList.add("end-card-users-active");
+	data.data.sort((a, b) => {
+		return a.index - b.index;
+	});
 	sessionStorage.clear();
 	ROUND.innerText = "End!";
 	GAMESECTION.style.display = "none";
@@ -186,9 +187,6 @@ function endGame(data) {
 			ENDCONTENT.innerHTML += `<div class="end-card-content-item"><span>${data.data[0].text}</span><br><span class="author">${data.data[0].fromStr}</span></div>`;
 			data.data.shift();
 		}
-		/*else if () {
-
-			}*/
 	});
 }
 

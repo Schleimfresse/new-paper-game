@@ -109,9 +109,8 @@ async function getData(data) {
 		game: data.object.data.game,
 		round: rounds[data.object.data.game] - 1,
 	}); // Getting the data from the previous round, therefore the "rounds" variable must be reduced by one
-	inddata = senddata;
-	inddata.forEach((e) => {
-		ind[e.to.toString()] = e.index;
+	senddata.forEach((e) => {
+		e.from = e.index;
 	});
 	console.log("data from getDataFromDb", senddata);
 	console.log("ind", ind);
