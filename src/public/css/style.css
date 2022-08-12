@@ -489,6 +489,11 @@ header #copyrights {
 }
 .author{
 	color: rgb(163, 163, 163);
-	right: 10px;
+	right: 20px;
     position: absolute;
+}
+.endcontent-box{
+	display: none;
+	position: absolute;
+	min-width: 100%;
 }

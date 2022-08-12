@@ -43,6 +43,7 @@ let i = 0;
 let you = "";
 let LASTCLICK = 0;
 let ICON = "";
+let prevObj = undefined;
 function IconChooser(data) {
 	if (data.icon) {
 		ICON =
@@ -86,7 +87,6 @@ function SystemMessage(data) {
 function updateReadyPLayers(data) {
 	i++;
 	USERSREADY.innerText = i;
-	console.log("gotten datsa endpoint", data);
 	if (!(i == data.quantity)) return;
 	setTimeout(() => {
 		i = 0;
@@ -106,8 +106,9 @@ function getInfo(input) {
 		to = sessionStorage.getItem("to");
 		index = sessionStorage.getItem("index");
 		from = sessionStorage.getItem("from");
+		fromStr = sessionStorage.getItem("name");
 		return (data = {
-			data: { text: input, to: to, from: from, game: game, round: null },
+			data: { text: input, to: to, fromStr: fromStr, from: from, game: game, round: null },
 			index: index,
 		});
 	}
@@ -144,7 +145,6 @@ function StartGame(data) {
 	const Element = data.gameIsOn.find((e) => {
 		return e.name == data.users[SOCKET.id];
 	});
-	console.log("Element", Element);
 	sessionStorage.setItem("lobby", Element.lobby);
 	sessionStorage.setItem("name", Element.name);
 	sessionStorage.setItem("from", Element.playerindex);
@@ -163,15 +163,17 @@ function startNewRound(data) {
 	const getNeededObj = data.senddata.find((e) => {
 		return sessionStorage.getItem("from") == e.to && e.round == data.rounds.prevRound;
 	});
-	sessionStorage.setItem('index', getNeededObj.index);
 	console.log("getNeededObj", getNeededObj);
+	sessionStorage.setItem("index", getNeededObj.index);
 	SHOWCASE.innerText = getNeededObj.text;
 }
 
 function endGame(data) {
-	console.log("ok", data.curRoomUsers);
+	let c = 0;
+	console.log('data', data);
 	for (e of data.curRoomUsers) {
 		ENDCARDUSERS.innerHTML += `<span class="end-card-users">${e.name}</span>`;
+		ENDCONTENT.innerHTML += `<div class="endcontent-box" id="end-${e.playerindex}"></div>`
 	}
 	ENDCARDUSERS.children[0].classList.add("end-card-users-active");
 	data.data.sort((a, b) => {
@@ -181,12 +183,18 @@ function endGame(data) {
 	ROUND.innerText = "End!";
 	GAMESECTION.style.display = "none";
 	ENDSECTION.style.display = "flex";
-	console.log("getData", data);
 	ENDNEXT.addEventListener("click", () => {
-		if (data.data.length != 0) {
-			ENDCONTENT.innerHTML += `<div class="end-card-content-item"><span>${data.data[0].text}</span><br><span class="author">${data.data[0].fromStr}</span></div>`;
-			data.data.shift();
+		if (data.data.length == 0) return;
+		document.getElementById(`end-${data.data[0].index}`).style.display = 'block';
+		document.getElementById(`end-${data.data[0].index}`).innerHTML += `<div class="end-card-content-item"><span>${data.data[0].text}</span><br><span class="author">${data.data[0].fromStr}</span></div>`;
+		
+		if (prevObj != undefined && prevObj.index !== data.data[0].index) {
+			c++;
+			document.getElementById(`end-${prevObj.index}`).style.display = 'none'
+			ENDCARDUSERS.children[c - 1].classList.remove("end-card-users-active");
+			ENDCARDUSERS.children[c].classList.add("end-card-users-active");
 		}
+		prevObj = data.data.shift();
 	});
 }
 

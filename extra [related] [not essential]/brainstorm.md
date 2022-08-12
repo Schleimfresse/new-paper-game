@@ -5,5 +5,13 @@
 
 ## index? && from? [+]
 
-## dataflow controling && cleaning
+## dc in game
+ - data clearing
+ - func
+
+## dataflow controlling && cleaning
 ## function DataFromDB(data) {} - remaster!
+## end state
+- information clearing
+  - Arrays server
+- GUI improvment

@@ -1,3 +1,4 @@
+// Init start
 const bodyparser = require("body-parser");
 const express = require("express");
 require("dotenv").config();
@@ -14,6 +15,8 @@ const Text = require("../models/content");
 const User = require("../models/users");
 const static = app.use(express.static("src/public"));
 const connectDB = require("../config/db");
+// Init end
+// Global variables start
 /**
  * An Object which holds all rooms and in which round they are currently in
  * @returns {Object} An Object with all rooms and in which round they are currently in
@@ -50,6 +53,119 @@ let roomNo = {};
  * @returns the updated userToRoom array
  * @public
  */
+// Global variables end
+
+function join(data, socket) {
+	let lobby = roomNo[data.lobby];
+	if (data.name.length > 15) {
+		data = {
+			boolean: true,
+			message: `Your name cannot be longer than 15 characters!<br>your name is currently ${data.name.length} characters long`,
+		};
+		socket.emit("fail", data);
+		return;
+	}
+	if (data.lobby !== lobby) {
+		data = { boolean: true, message: "This lobby does not exists" };
+		socket.emit("fail", data);
+		return;
+	}
+	if (!checkName(data)) {
+		data = {
+			boolean: true,
+			message: "In that lobby you wanted to join,<br /> is already someone with that name",
+		};
+		socket.emit("fail", data);
+		return;
+	}
+	socket.join(lobby);
+	console.log(`New client connection: room nr. ${lobby} (${socket.id})`);
+	let senddata = {
+		room: lobby,
+		name: data.name,
+		icon: false,
+	};
+	socket.emit("success", senddata);
+	console.log("Just came: ", data.name);
+	users[socket.id] = data.name;
+	let createData = userToRoom.filter(function (e) {
+		return e.lobby == lobby;
+	});
+	userToRoom.push({
+		name: data.name,
+		lobby: lobby,
+		socketid: socket.id,
+		icon: false,
+	});
+	socket.emit("createOtherOnlineUsers", createData);
+}
+
+function create(data, socket) {
+	if (data === roomNo[data]) {
+		data = { boolean: false, message: "This lobby already exists" };
+		socket.emit("fail", data);
+		return;
+	}
+	roomNo[data] = data;
+	socket.join(roomNo[data]);
+	console.log(`New client connection: room nr. ${roomNo[data]} (${socket.id})`);
+	let datacreate = {
+		room: roomNo[data],
+		name: data,
+		icon: true,
+	};
+	socket.emit("success", datacreate);
+	socket.emit("START_BT");
+	console.log("Just came: ", data);
+	users[socket.id] = data;
+	userToRoom.push({
+		name: data,
+		lobby: roomNo[data],
+		socketid: socket.id,
+		icon: true,
+	});
+	io.emit("ActiveLobbyDataRequest", { data: userToRoom, boolean: true });
+}
+
+function disconnect(socket) {
+	console.log("DISCONNECTION for ", socket.id);
+	console.log("disconn user: ", users[socket.id]);
+	let dcuser = users[socket.id];
+	if (dcuser != undefined) {
+		dcuser = userToRoom.find((e) => {
+			return e.name == dcuser;
+		});
+		Systemdata = { message: `${dcuser.name} has left the lobby` };
+		io.to(dcuser.lobby).emit("SystemMessage", Systemdata);
+		io.to(dcuser.lobby).emit("removeUserElement", { user: dcuser.name });
+		if (dcuser.name === dcuser.lobby) {
+			io.emit("ActiveLobbyDataRequest", { data: { name: dcuser.name }, boolean: false });
+			socket.leave(dcuser.lobby);
+			io.to(dcuser.lobby).socketsLeave(dcuser.lobby);
+			removeAllUsersFromArray(dcuser);
+			if (io.sockets.adapter.rooms.get(dcuser.lobby) == undefined) {
+				// When lobby is empty (dcuser.lobby), because all clients left and the room then gets deleted, the room gets removed from the array
+				deleteroomNo[dcuser.lobby];
+			}
+			console.log("roomNo", roomNo);
+			io.to(dcuser.lobby).emit("SystemMessage", {
+				message: `${dcuser.name} disconnected, the room will be terminated; you will be redirected shortly.`,
+			});
+			setTimeout(() => {
+				io.to(dcuser.lobby).emit("terminate");
+			}, 5000);
+		} else {
+			socket.leave(dcuser.lobby);
+			removeDisconnectFromArray(userToRoom, socket);
+			if (io.sockets.adapter.rooms.get(dcuser.lobby) == undefined) {
+				deleteroomNo[dcuser.lobby];
+			}
+		}
+	}
+	delete users[socket.id];
+}
+// ##################################
+
 function removeDisconnectFromArray(userToRoom, socket) {
 	const indexOfObject = userToRoom.findIndex((e) => {
 		return e.socketid == socket.id;
@@ -70,21 +186,28 @@ function removeStartedRoomFromArray(array, data) {
 			});
 			obj.playerindex = filterforobjects.length + 1;
 			gameIsOn.push(obj);
-			console.log(gameIsOn);
 		}
 	}
 }
 async function addContentToDb(data) {
+	data.data.round = rounds[data.data.game]; // Gives the dataflow the current round
+
 	let content = new Text({
 		text: data.data.text,
 		to: parseInt(data.data.to),
 		from: parseInt(data.data.from),
-		fromStr: data.index,
+		fromStr: data.data.fromStr,
 		round: data.data.round,
 		game: data.data.game,
 		index: data.index,
 	});
 	await content.save();
+
+	const quantity = gameIsOn.filter((e) => {
+		return e.lobby == data.data.game;
+	});
+	senddata = { object: data, quantity: quantity.length };
+	io.in(data.data.game).emit("updateReadyPlayers", senddata);
 }
 function checkName(data) {
 	const check = userToRoom.some((e) => e.name === data.name && e.lobby === data.lobby);
@@ -103,8 +226,6 @@ function removeAllUsersFromArray(dcuser) {
 	}
 }
 async function getData(data) {
-	ind = {};
-	console.log("init data", data);
 	senddata = await Text.find({
 		game: data.object.data.game,
 		round: rounds[data.object.data.game] - 1,
@@ -112,12 +233,9 @@ async function getData(data) {
 	senddata.forEach((e) => {
 		e.from = e.index;
 	});
-	console.log("data from getDataFromDb", senddata);
-	console.log("ind", ind);
 	finaldata = {
 		senddata: senddata,
 		data: data.dataall,
-		indexes: ind,
 		rounds: {
 			curRound: rounds[data.object.data.game],
 			prevRound: rounds[data.object.data.game] - 1,
@@ -126,13 +244,11 @@ async function getData(data) {
 	io.in(data.object.data.game).emit("startNewRound", finaldata);
 }
 async function getDataForEnd(data) {
-	console.log("data get for init", data);
 	const currentRoom = gameIsOn.filter((e) => {
 		return e.lobby == data.object.data.game;
 	});
 	searchdata = await Text.find({ game: data.object.data.game });
-	finaldata = {data: searchdata, all: currentRoom.length, curRoomUsers: currentRoom}
-	console.log("data from getDataFromDb END", finaldata);
+	finaldata = { data: searchdata, all: currentRoom.length, curRoomUsers: currentRoom };
 	io.in(data.object.data.game).emit("endGame", finaldata);
 	await Text.deleteMany({ game: data.object.data.game });
 }
@@ -152,6 +268,9 @@ module.exports = {
 	userToRoom,
 	gameIsOn,
 	roomNo,
+	join,
+	create,
+	disconnect,
 	removeDisconnectFromArray,
 	removeStartedRoomFromArray,
 	addContentToDb,

@@ -3,7 +3,6 @@ GAMETEXTSUBMIT.addEventListener("click", () => {
 	GAMETEXTSUBMIT.setAttribute("disabled", true);
 	GAMETEXTAREA.value = "";
 	SOCKET.emit("addContentToDb", getInfo(input));
-	console.log('test', getInfo(input));
 });
 
 SOCKET.on("StartGame", (data) => {
