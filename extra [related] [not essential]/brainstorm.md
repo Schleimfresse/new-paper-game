@@ -15,3 +15,5 @@
 - information clearing
   - Arrays server
 - GUI improvment
+
+## reminder: client Lib Z. 200 [+]

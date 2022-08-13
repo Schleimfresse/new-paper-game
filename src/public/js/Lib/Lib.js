@@ -168,12 +168,23 @@ function startNewRound(data) {
 	SHOWCASE.innerText = getNeededObj.text;
 }
 
+function getElementsForEnd(boolean) {
+	if (boolean) {
+		return document.querySelectorAll(".end-card-users");
+	}
+	if (!boolean) {
+		return document.querySelectorAll(".endcontent-box");
+	}
+}
+
 function endGame(data) {
 	let c = 0;
-	console.log('data', data);
+	let x = 0;
+	let called = false;
+	console.log("data", data);
 	for (e of data.curRoomUsers) {
-		ENDCARDUSERS.innerHTML += `<span class="end-card-users">${e.name}</span>`;
-		ENDCONTENT.innerHTML += `<div class="endcontent-box" id="end-${e.playerindex}"></div>`
+		ENDCARDUSERS.innerHTML += `<span class="end-card-users" id="enduser-${e.playerindex}">${e.name}</span>`;
+		ENDCONTENT.innerHTML += `<div class="endcontent-box" id="enduser-${e.playerindex}-BOX"></div>`;
 	}
 	ENDCARDUSERS.children[0].classList.add("end-card-users-active");
 	data.data.sort((a, b) => {
@@ -184,18 +195,59 @@ function endGame(data) {
 	GAMESECTION.style.display = "none";
 	ENDSECTION.style.display = "flex";
 	ENDNEXT.addEventListener("click", () => {
-		if (data.data.length == 0) return;
-		document.getElementById(`end-${data.data[0].index}`).style.display = 'block';
-		document.getElementById(`end-${data.data[0].index}`).innerHTML += `<div class="end-card-content-item"><span>${data.data[0].text}</span><br><span class="author">${data.data[0].fromStr}</span></div>`;
-		
+		if (data.data.length === 0) return;
 		if (prevObj != undefined && prevObj.index !== data.data[0].index) {
-			c++;
-			document.getElementById(`end-${prevObj.index}`).style.display = 'none'
-			ENDCARDUSERS.children[c - 1].classList.remove("end-card-users-active");
-			ENDCARDUSERS.children[c].classList.add("end-card-users-active");
+			x++;
+			console.log(
+				"trigger if condition:",
+				prevObj != undefined && prevObj.index !== data.data[0].index
+			);
+			if (x === 1) {
+				c++;
+				document.getElementById(`enduser-${prevObj.index}-BOX`).style.display = "none";
+				getElementsForEnd(true).forEach((e) => {
+					e.classList.remove("end-card-users-active");
+				});
+				ENDCARDUSERS.children[c].classList.add("end-card-users-active");
+			}
+			if (x === 2) {
+				console.log("trigger else x === 2");
+				document.getElementById(
+					`enduser-${data.data[0].index}-BOX`
+				).innerHTML += `<div class="end-card-content-item"><span>${data.data[0].text}</span><br><span class="author">${data.data[0].fromStr}</span></div>`;
+				document.getElementById(`enduser-${data.data[0].index}-BOX`).style.display = "block";
+				prevObj = data.data.shift();
+				x = 0;
+			}
+		} else {
+			document.getElementById(
+				`enduser-${data.data[0].index}-BOX`
+			).innerHTML += `<div class="end-card-content-item"><span>${data.data[0].text}</span><br><span class="author">${data.data[0].fromStr}</span></div>`;
+			document.getElementById(`enduser-${data.data[0].index}-BOX`).style.display = "block";
+			prevObj = data.data.shift();
 		}
-		prevObj = data.data.shift();
+
+		if (data.data.length === 0 && !called) {
+			getElementsForEnd(true).forEach((element) => {
+				element.setAttribute("onclick", "changeTab(this.id);");
+				element.style.cursor = "pointer";
+			});
+			ENDNEXT.style.display = "none";
+			called = true;
+		}
 	});
+}
+
+function changeTab(element) {
+	getElementsForEnd(true).forEach((e) => {
+		e.classList.remove("end-card-users-active");
+	});
+	getElementsForEnd(false).forEach((e) => {
+		e.style.display = "none";
+	});
+	console.log("box", document.getElementById(`${element}-BOX`));
+	document.getElementById(`${element}-BOX`).style.display = "block";
+	document.getElementById(element).classList.add("end-card-users-active");
 }
 
 function success(data) {
