@@ -231,7 +231,7 @@ function endGame(data) {
 				});
 				ENDNEXT.style.display = "none";
 				called = true;
-				DOWNLOAD_PDF_WRAPPER.innerHTML = `<button type="button" id="download_pdf_bt"><span><ion-icon name="download-outline"></ion-icon></span><span>Download as PDF</span></button>`;
+				DOWNLOAD_PDF_WRAPPER.innerHTML = `<button type="button" id="download_pdf_bt"><span class="download_pdf_bt__text"><ion-icon name="download-outline"></ion-icon></span><span class="download_pdf_bt__icon">Download as PDF</span></button>`;
 				document.getElementById("download_pdf_bt").onclick = function () {
 					console.log("PDF_ARRAY", PDF_ARRAY);
 					createPDF(PDF_ARRAY, currentDate);

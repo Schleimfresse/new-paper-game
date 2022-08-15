@@ -21,16 +21,8 @@ body {
 	color: var(--color);
 }
 body {
-	background: -moz-radial-gradient(
-		circle at 3% 25%,
-		rgba(0, 40, 83, 1) 0%,
-		rgba(4, 12, 24, 1) 100%
-	);
-	background: -webkit-radial-gradient(
-		circle at 3% 25%,
-		rgba(0, 40, 83, 1) 0%,
-		rgba(4, 12, 24, 1) 100%
-	);
+	background: -moz-radial-gradient(circle at 3% 25%, rgba(0, 40, 83, 1) 0%, rgba(4, 12, 24, 1) 100%);
+	background: -webkit-radial-gradient(circle at 3% 25%, rgba(0, 40, 83, 1) 0%, rgba(4, 12, 24, 1) 100%);
 	background: -o-radial-gradient(circle at 3% 25%, rgba(0, 40, 83, 1) 0%, rgba(4, 12, 24, 1) 100%);
 	background: -ms-radial-gradient(circle at 3% 25%, rgba(0, 40, 83, 1) 0%, rgba(4, 12, 24, 1) 100%);
 	background: url("../img/background.svg"),
@@ -409,9 +401,10 @@ header #copyrights {
 }
 #end-card {
 	height: 60vh;
-	width: 50vw;
+	width: 100vw;
 	display: flex;
 	flex-direction: row;
+	justify-content: center;
 }
 #end-card-users {
 	overflow-y: scroll;
@@ -434,7 +427,7 @@ header #copyrights {
 	border-left: none;
 	background-clip: padding-box;
 	border-radius: 0 10px 10px 0;
-	min-width: 20vw;
+	min-width: 70vw;
 }
 
 .end-card-users {
@@ -487,13 +480,54 @@ header #copyrights {
 	min-width: 100%;
 	height: fit-content;
 }
-.author{
+.author {
 	color: #a3a3a3;
 	right: 20px;
-    position: absolute;
+	position: absolute;
 }
-.endcontent-box{
+.endcontent-box {
 	display: none;
 	position: absolute;
 	min-width: 100%;
+}
+#download-pdf-wrapper {
+	position: absolute;
+	bottom: 100px;
+	display: flex;
+	justify-content: center;
+}
+#download_pdf_bt {
+	display: flex;
+	height: 50px;
+	padding: 0;
+	background: #0048b4;
+	border: none;
+	outline: none;
+	border-radius: 5px;
+	overflow: hidden;
+	font-family: "Quicksand", sans-serif;
+	font-size: 16px;
+	font-weight: 500;
+	cursor: pointer;
+}
+
+#download_pdf_bt:hover {
+	background: #013f9c;
+}
+
+#download_pdf_bt:active {
+	background: #00398f;
+}
+
+.download_pdf_bt__text,
+.download_pdf_bt__icon {
+	display: inline-flex;
+	align-items: center;
+	padding: 0 24px;
+	color: #fff;
+	height: 100%;
+}
+.download_pdf_bt__icon {
+	font-size: 1.5em;
+	background: rgba(0, 0, 0, 0.08);
 }
