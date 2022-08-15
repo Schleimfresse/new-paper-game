@@ -307,7 +307,7 @@ body {
 	}
 }
 #showcase {
-	width: 50vw;
+	width: 80vw;
 	font-size: 1.5em;
 	margin-left: 2em;
 	margin-top: 1em;
@@ -488,7 +488,7 @@ header #copyrights {
 	height: fit-content;
 }
 .author{
-	color: rgb(163, 163, 163);
+	color: #a3a3a3;
 	right: 20px;
     position: absolute;
 }

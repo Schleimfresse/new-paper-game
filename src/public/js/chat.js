@@ -36,7 +36,7 @@ START_BT.addEventListener("click", () => {
 			Systemdata = {
 				message: `There are not enough players, you need at least ${
 					4 - data.amount
-				} more player${plural} to start a game.`,
+				} more player${plural} to start the game.`,
 			};
 			SystemMessage(Systemdata);
 		} else if (data.amount >= 4) {

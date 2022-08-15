@@ -38,6 +38,7 @@ const ENDCONTENT = document.getElementById("end-card-content");
 const ENDFOOTER = document.getElementById("end-card-content-footer");
 const ENDCARDUSERS = document.getElementById("end-card-users");
 const SPAN = document.createElement("span");
+const DOWNLOAD_PDF_WRAPPER = document.getElementById("download-pdf-wrapper");
 const x = 5;
 let i = 0;
 let you = "";
@@ -46,12 +47,10 @@ let ICON = "";
 let prevObj = undefined;
 function IconChooser(data) {
 	if (data.icon) {
-		ICON =
-			'<ion-icon class="icon-spacing-right icon-size-small" name="diamond-outline"></ion-icon>';
+		ICON = '<ion-icon class="icon-spacing-right icon-size-small" name="diamond-outline"></ion-icon>';
 		return ICON;
 	} else if (!data.icon) {
-		ICON =
-			'<ion-icon class="icon-spacing-right icon-size-small" name="person-circle-outline"></ion-icon>';
+		ICON = '<ion-icon class="icon-spacing-right icon-size-small" name="person-circle-outline"></ion-icon>';
 		return ICON;
 	}
 }
@@ -181,61 +180,106 @@ function endGame(data) {
 	let c = 0;
 	let x = 0;
 	let called = false;
-	console.log("data", data);
+	data.data.sort((a, b) => {
+		return a.index - b.index;
+	});
+	const PDF_ARRAY = data.data.slice();
+	console.log("PDF_ARRAY", PDF_ARRAY);
 	for (e of data.curRoomUsers) {
 		ENDCARDUSERS.innerHTML += `<span class="end-card-users" id="enduser-${e.playerindex}">${e.name}</span>`;
 		ENDCONTENT.innerHTML += `<div class="endcontent-box" id="enduser-${e.playerindex}-BOX"></div>`;
 	}
 	ENDCARDUSERS.children[0].classList.add("end-card-users-active");
-	data.data.sort((a, b) => {
-		return a.index - b.index;
-	});
+
 	sessionStorage.clear();
 	ROUND.innerText = "End!";
-	GAMESECTION.style.display = "none";
-	ENDSECTION.style.display = "flex";
-	ENDNEXT.addEventListener("click", () => {
-		if (data.data.length === 0) return;
-		if (prevObj != undefined && prevObj.index !== data.data[0].index) {
-			x++;
-			console.log(
-				"trigger if condition:",
-				prevObj != undefined && prevObj.index !== data.data[0].index
-			);
-			if (x === 1) {
-				c++;
-				document.getElementById(`enduser-${prevObj.index}-BOX`).style.display = "none";
-				getElementsForEnd(true).forEach((e) => {
-					e.classList.remove("end-card-users-active");
-				});
-				ENDCARDUSERS.children[c].classList.add("end-card-users-active");
-			}
-			if (x === 2) {
-				console.log("trigger else x === 2");
+	setTimeout(() => {
+		GAMESECTION.style.display = "none";
+		ENDSECTION.style.display = "flex";
+		ENDNEXT.addEventListener("click", () => {
+			if (data.data.length === 0) return;
+			if (prevObj != undefined && prevObj.index !== data.data[0].index) {
+				x++;
+				if (x === 1) {
+					c++;
+					document.getElementById(`enduser-${prevObj.index}-BOX`).style.display = "none";
+					getElementsForEnd(true).forEach((e) => {
+						e.classList.remove("end-card-users-active");
+					});
+					ENDCARDUSERS.children[c].classList.add("end-card-users-active");
+				}
+				if (x === 2) {
+					document.getElementById(
+						`enduser-${data.data[0].index}-BOX`
+					).innerHTML += `<div class="end-card-content-item"><span>${data.data[0].text}</span><br><span class="author">${data.data[0].fromStr}</span></div>`;
+					document.getElementById(`enduser-${data.data[0].index}-BOX`).style.display = "block";
+					prevObj = data.data.shift();
+					x = 0;
+				}
+			} else {
 				document.getElementById(
 					`enduser-${data.data[0].index}-BOX`
 				).innerHTML += `<div class="end-card-content-item"><span>${data.data[0].text}</span><br><span class="author">${data.data[0].fromStr}</span></div>`;
 				document.getElementById(`enduser-${data.data[0].index}-BOX`).style.display = "block";
 				prevObj = data.data.shift();
-				x = 0;
 			}
-		} else {
-			document.getElementById(
-				`enduser-${data.data[0].index}-BOX`
-			).innerHTML += `<div class="end-card-content-item"><span>${data.data[0].text}</span><br><span class="author">${data.data[0].fromStr}</span></div>`;
-			document.getElementById(`enduser-${data.data[0].index}-BOX`).style.display = "block";
-			prevObj = data.data.shift();
-		}
+	
+			if (data.data.length === 0 && !called) {
+				getElementsForEnd(true).forEach((element) => {
+					element.setAttribute("onclick", "changeTab(this.id);");
+					element.style.cursor = "pointer";
+				});
+				ENDNEXT.style.display = "none";
+				called = true;
+				DOWNLOAD_PDF_WRAPPER.innerHTML = `<button type="button" id="download_pdf_bt"><span><ion-icon name="download-outline"></ion-icon></span><span>Download as PDF</span></button>`;
+				document.getElementById("download_pdf_bt").onclick = function () {
+					console.log("PDF_ARRAY", PDF_ARRAY);
+					createPDF(PDF_ARRAY, currentDate);
+				};
+			}
+		});
+	}, 1500)
+	
+}
 
-		if (data.data.length === 0 && !called) {
-			getElementsForEnd(true).forEach((element) => {
-				element.setAttribute("onclick", "changeTab(this.id);");
-				element.style.cursor = "pointer";
-			});
-			ENDNEXT.style.display = "none";
-			called = true;
+function createPDF(data, date) {
+	let doc = {
+		content: [],
+		styles: {
+			header: {
+				fontSize: 22,
+				bold: true,
+				lineHeight: 1.2,
+				characterSpacing: 1.2,
+			},
+			paragrapgh: {
+				lineHeight: 1.2,
+			},
+			author: {
+				alignment: 'right',
+				color: '#a3a3a3',
+			},
+		},
+	};
+	while (data.length !== 0) {
+		if (prevObj === undefined || prevObj.index !== data[0].index) {
+			let header = { text: data[0].fromStr, style: "header" };
+			let textcontent = { text: data[0].text, style: "paragraph" };
+			let author = { text: data[0].fromStr, style: "author" };
+			console.log("header", header);
+			doc.content.push(header);
+			doc.content.push(textcontent);
+			doc.content.push(author);
+			prevObj = data.shift();
+		} else {
+			let textcontent = { text: data[0].text, style: "paragraph" };
+			let author = { text: data[0].fromStr, style: "author" };
+			doc.content.push(textcontent);
+			doc.content.push(author);
+			prevObj = data.shift();
 		}
-	});
+	}
+	pdfMake.createPdf(doc).download(`paper_game-${date}`);
 }
 
 function changeTab(element) {
@@ -245,7 +289,6 @@ function changeTab(element) {
 	getElementsForEnd(false).forEach((e) => {
 		e.style.display = "none";
 	});
-	console.log("box", document.getElementById(`${element}-BOX`));
 	document.getElementById(`${element}-BOX`).style.display = "block";
 	document.getElementById(element).classList.add("end-card-users-active");
 }

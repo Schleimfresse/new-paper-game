@@ -68,7 +68,7 @@ SOCKET.on("createOtherOnlineUsers", (data) => {
 SOCKET.on("START_BT", () => {
 	START_BT.setAttribute("id", "START_BT");
 	START_BT.setAttribute("class", "bt-small");
-	START_BT.innerText = "Start"
+	START_BT.innerText = "Start";
 	PREROOM.appendChild(START_BT);
 	ENDNEXT.setAttribute("id", "end-card-next");
 	ENDNEXT.setAttribute("class", "bt-small");

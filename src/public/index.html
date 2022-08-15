@@ -4,31 +4,39 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="msapplication-TileColor" content="#da532c" />
+		<meta name="theme-color" content="#ffffff" />
 		<link rel="apple-touch-icon" sizes="180x180" href="./img/apple-touch-icon.png" />
 		<link rel="icon" type="image/png" sizes="32x32" href="./img/favicon-32x32.png" />
 		<link rel="icon" type="image/png" sizes="16x16" href="./img/favicon-16x16.png" />
 		<link rel="manifest" href="./manifests/site.webmanifest" />
 		<link rel="mask-icon" href="./img/safari-pinned-tab.svg" color="#5bbad5" />
-		<meta name="msapplication-TileColor" content="#da532c" />
-		<meta name="theme-color" content="#ffffff" />
+		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+		<link rel="stylesheet" href="./css/style.css" />
 		<script defer src="/socket.io/socket.io.js"></script>
+		<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.5/pdfmake.min.js"
+			integrity="sha512-rDbVu5s98lzXZsmJoMa0DjHNE+RwPJACogUCLyq3Xxm2kJO6qsQwjbE5NDk2DqmlKcxDirCnU1wAzVLe12IM3w=="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		></script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.5/vfs_fonts.js"
+			integrity="sha512-cktKDgjEiIkPVHYbn8bh/FEyYxmt4JDJJjOCu5/FQAkW4bc911XtKYValiyzBiJigjVEvrIAyQFEbRJZyDA1wQ=="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		></script>
+		<script type="text/javascript" defer src="js/helpers/date.js"></script>
 		<script type="text/javascript" defer src="js/Lib/Lib.js"></script>
 		<script type="text/javascript" defer src="js/chat.js"></script>
 		<script type="text/javascript" defer src="js/game.js"></script>
 		<script type="text/javascript" defer src="js/client.js"></script>
-		<script
-			type="module"
-			src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"
-		></script>
-		<link rel="stylesheet" href="./css/style.css" />
-		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 		<title>Choose | Paper Game</title>
 	</head>
 	<body>
 		<header>
-			<div id="header-title">
-				<ion-icon name="document-outline"></ion-icon><span>Paper game</span>
-			</div>
+			<div id="header-title"><ion-icon name="document-outline"></ion-icon><span>Paper game</span></div>
 			<div id="copyrights">Copyright (c) 2022 Schleimfresse. All rights reserved.</div>
 		</header>
 		<div id="joincreateselection">
@@ -84,10 +92,7 @@
 					>Round:&nbsp;<span id="round">1</span>
 				</div>
 				<div class="information-wrapper">
-					<ion-icon
-						class="icon-size-small icon-spacing-right"
-						name="checkmark-circle-outline"
-					></ion-icon
+					<ion-icon class="icon-size-small icon-spacing-right" name="checkmark-circle-outline"></ion-icon
 					><span id="usersReady">0</span>/<span id="allUsers"></span>
 				</div>
 			</div>
@@ -100,6 +105,7 @@
 					<div id="end-card-content-footer"></div>
 				</div>
 			</div>
+			<div id="download-pdf-wrapper"></div>
 		</section>
 	</body>
 </html>

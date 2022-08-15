@@ -10,7 +10,6 @@ const bodyparsing = app.use(bodyparser.json({ limit: "1mb" }));
 const listen = server.listen(port, () => {
 	console.log(`app listening at Port: ${port}`);
 });
-const mongoose = require("mongoose");
 const Text = require("../models/content");
 const User = require("../models/users");
 const static = app.use(express.static("src/public"));
@@ -47,12 +46,6 @@ let gameIsOn = [];
  * @public
  */
 let roomNo = {};
-/**
- * Removes the entry of the disconnected user from the userToRoom array.
- * @param {Object} userToRoom - Array
- * @returns the updated userToRoom array
- * @public
- */
 // Global variables end
 
 function join(data, socket) {
@@ -132,9 +125,18 @@ function disconnect(socket) {
 	console.log("disconn user: ", users[socket.id]);
 	let dcuser = users[socket.id];
 	if (dcuser != undefined) {
-		dcuser = userToRoom.find((e) => {
+		let dcuserFinal = userToRoom.find((e) => {
 			return e.name == dcuser;
 		});
+		console.log(dcuser);
+		console.log(dcuserFinal);
+		if (dcuserFinal === undefined) {
+			dcuserFinal = gameIsOn.find((e) => {
+				return e.name == dcuser;
+			});
+		}
+		console.log("gameison", gameIsOn);
+		console.log(dcuser);
 		Systemdata = { message: `${dcuser.name} has left the lobby` };
 		io.to(dcuser.lobby).emit("SystemMessage", Systemdata);
 		io.to(dcuser.lobby).emit("removeUserElement", { user: dcuser.name });
@@ -145,9 +147,8 @@ function disconnect(socket) {
 			removeAllUsersFromArray(dcuser);
 			if (io.sockets.adapter.rooms.get(dcuser.lobby) == undefined) {
 				// When lobby is empty (dcuser.lobby), because all clients left and the room then gets deleted, the room gets removed from the array
-				deleteroomNo[dcuser.lobby];
+				delete roomNo[dcuser.lobby];
 			}
-			console.log("roomNo", roomNo);
 			io.to(dcuser.lobby).emit("SystemMessage", {
 				message: `${dcuser.name} disconnected, the room will be terminated; you will be redirected shortly.`,
 			});
@@ -164,8 +165,13 @@ function disconnect(socket) {
 	}
 	delete users[socket.id];
 }
-// ##################################
 
+/**
+ * Removes the entry of the disconnected user from the userToRoom array.
+ * @param {Object} userToRoom - Array
+ * @returns the updated userToRoom array
+ * @public
+ */
 function removeDisconnectFromArray(userToRoom, socket) {
 	const indexOfObject = userToRoom.findIndex((e) => {
 		return e.socketid == socket.id;
@@ -251,6 +257,14 @@ async function getDataForEnd(data) {
 	finaldata = { data: searchdata, all: currentRoom.length, curRoomUsers: currentRoom };
 	io.in(data.object.data.game).emit("endGame", finaldata);
 	await Text.deleteMany({ game: data.object.data.game });
+	clearData(data.object.data.game);
+}
+
+function clearData(game) {
+	gameIsOn.filter((e) => e.lobby === game).forEach((e) => gameIsOn.splice(gameIsOn.indexOf(e), 1));
+	delete rounds[game];
+	io.to(game).socketsLeave(game);
+	console.log('users', users);
 }
 
 module.exports = {

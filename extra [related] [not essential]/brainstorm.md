@@ -17,3 +17,7 @@
 - GUI improvment
 
 ## reminder: client Lib Z. 200 [+]
+
+## PDF ARRAY priority: high
+
+## ActiveLobbyDataRequest remove();
