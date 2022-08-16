@@ -91,6 +91,7 @@ function join(data, socket) {
 		icon: false,
 	});
 	socket.emit("createOtherOnlineUsers", createData);
+	console.log("usertoroom", userToRoom);
 }
 
 function create(data, socket) {
@@ -118,6 +119,7 @@ function create(data, socket) {
 		icon: true,
 	});
 	io.emit("ActiveLobbyDataRequest", { data: userToRoom, boolean: true });
+	console.log("usertoroom", userToRoom);
 }
 
 function disconnect(socket) {
@@ -125,6 +127,7 @@ function disconnect(socket) {
 	console.log("disconn user: ", users[socket.id]);
 	let dcuser = users[socket.id];
 	if (dcuser != undefined) {
+		console.log("usertoroom", userToRoom);
 		let dcuserFinal = userToRoom.find((e) => {
 			return e.name == dcuser;
 		});
@@ -137,29 +140,30 @@ function disconnect(socket) {
 		}
 		console.log("gameison", gameIsOn);
 		console.log(dcuser);
-		Systemdata = { message: `${dcuser.name} has left the lobby` };
-		io.to(dcuser.lobby).emit("SystemMessage", Systemdata);
-		io.to(dcuser.lobby).emit("removeUserElement", { user: dcuser.name });
-		if (dcuser.name === dcuser.lobby) {
-			io.emit("ActiveLobbyDataRequest", { data: { name: dcuser.name }, boolean: false });
-			socket.leave(dcuser.lobby);
-			io.to(dcuser.lobby).socketsLeave(dcuser.lobby);
-			removeAllUsersFromArray(dcuser);
-			if (io.sockets.adapter.rooms.get(dcuser.lobby) == undefined) {
+		Systemdata = { message: `${dcuserFinal.name} has left the lobby` };
+		io.to(dcuserFinal.lobby).emit("SystemMessage", Systemdata);
+		io.to(dcuserFinal.lobby).emit("removeUserElement", { user: dcuserFinal.name });
+		if (dcuserFinal.name === dcuserFinal.lobby) {
+			console.log("trigger");
+			io.emit("ActiveLobbyDataRequest", { data: { name: dcuserFinal.name }, boolean: false });
+			socket.leave(dcuserFinal.lobby);
+			io.to(dcuserFinal.lobby).socketsLeave(dcuserFinal.lobby);
+			removeAllUsersFromArray(dcuserFinal);
+			if (io.sockets.adapter.rooms.get(dcuserFinal.lobby) === undefined) {
 				// When lobby is empty (dcuser.lobby), because all clients left and the room then gets deleted, the room gets removed from the array
-				delete roomNo[dcuser.lobby];
+				delete roomNo[dcuserFinal.lobby];
 			}
-			io.to(dcuser.lobby).emit("SystemMessage", {
-				message: `${dcuser.name} disconnected, the room will be terminated; you will be redirected shortly.`,
+			io.to(dcuserFinal.lobby).emit("SystemMessage", {
+				message: `${dcuserFinal.name} disconnected, the room will be terminated; you will be redirected shortly.`,
 			});
 			setTimeout(() => {
-				io.to(dcuser.lobby).emit("terminate");
-			}, 5000);
+				io.to(dcuserFinal.lobby).emit("terminate");
+			}, 4000);
 		} else {
-			socket.leave(dcuser.lobby);
+			socket.leave(dcuserFinal.lobby);
 			removeDisconnectFromArray(userToRoom, socket);
-			if (io.sockets.adapter.rooms.get(dcuser.lobby) == undefined) {
-				deleteroomNo[dcuser.lobby];
+			if (io.sockets.adapter.rooms.get(dcuserFinal.lobby) == undefined) {
+				delete roomNo[dcuserFinal.lobby];
 			}
 		}
 	}
@@ -192,6 +196,7 @@ function removeStartedRoomFromArray(array, data) {
 			});
 			obj.playerindex = filterforobjects.length + 1;
 			gameIsOn.push(obj);
+			console.table(gameIsOn);
 		}
 	}
 }
@@ -261,10 +266,11 @@ async function getDataForEnd(data) {
 }
 
 function clearData(game) {
-	gameIsOn.filter((e) => e.lobby === game).forEach((e) => gameIsOn.splice(gameIsOn.indexOf(e), 1));
+	let filtered = gameIsOn.filter((e) => e.lobby === game);
+	filtered.forEach((e) => gameIsOn.splice(gameIsOn.indexOf(e), 1));
+	filtered.forEach((e) => delete users[e.socketid]);
 	delete rounds[game];
 	io.to(game).socketsLeave(game);
-	console.log('users', users);
 }
 
 module.exports = {

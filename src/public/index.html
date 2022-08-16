@@ -80,13 +80,8 @@
 				</form>
 			</div>
 		</div>
-		<section id="game-section">
-			<div id="textinput-wrapper">
-				<div id="showcase"></div>
-				<textarea id="game-textarea"></textarea>
-				<input type="submit" id="game-text-submit" />
-			</div>
-			<div id="ready-wrapper">
+		<div id="ready-wrapper">
+			<div id="ready-box">
 				<div class="information-wrapper">
 					<ion-icon class="icon-size-small icon-spacing-right" name="attach-outline"></ion-icon
 					>Round:&nbsp;<span id="round">1</span>
@@ -95,6 +90,36 @@
 					<ion-icon class="icon-size-small icon-spacing-right" name="checkmark-circle-outline"></ion-icon
 					><span id="usersReady">0</span>/<span id="allUsers"></span>
 				</div>
+				<div class="information-wrapper" id="ping-box">
+					<svg
+						id="loading-spinner-svg"
+						xmlns="http://www.w3.org/2000/svg"
+						xmlns:xlink="http://www.w3.org/1999/xlink"
+						width="24px"
+						height="24px"
+						viewBox="0 0 100 100"
+						preserveAspectRatio="xMidYMid"
+						class="icon-spacing-right icon-size-small"
+					>
+						<circle
+							cx="50"
+							cy="50"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="10"
+							r="35"
+							stroke-dasharray="164.93361431346415 56.97787143782138"
+						></circle>
+					</svg>
+					<span id="ping-update">Connecting...</span>
+				</div>
+			</div>
+		</div>
+		<section id="game-section">
+			<div id="textinput-wrapper">
+				<div id="showcase"></div>
+				<textarea id="game-textarea"></textarea>
+				<input type="submit" id="game-text-submit" />
 			</div>
 		</section>
 		<section id="end-section">

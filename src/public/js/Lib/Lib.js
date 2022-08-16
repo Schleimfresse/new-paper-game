@@ -39,6 +39,8 @@ const ENDFOOTER = document.getElementById("end-card-content-footer");
 const ENDCARDUSERS = document.getElementById("end-card-users");
 const SPAN = document.createElement("span");
 const DOWNLOAD_PDF_WRAPPER = document.getElementById("download-pdf-wrapper");
+const PING_ELEMENT = document.getElementById('ping-update');
+const PING_BOX = document.getElementById('ping-box');
 const x = 5;
 let i = 0;
 let you = "";
@@ -141,6 +143,7 @@ function StartGame(data) {
 	HEADER.style.display = "none";
 	PREROOM.style.display = "none";
 	GAMESECTION.style.display = "flex";
+	document.querySelectorAll('.information-wrapper').style.display = 'flex';
 	const Element = data.gameIsOn.find((e) => {
 		return e.name == data.users[SOCKET.id];
 	});
@@ -231,7 +234,7 @@ function endGame(data) {
 				});
 				ENDNEXT.style.display = "none";
 				called = true;
-				DOWNLOAD_PDF_WRAPPER.innerHTML = `<button type="button" id="download_pdf_bt"><span class="download_pdf_bt__text"><ion-icon name="download-outline"></ion-icon></span><span class="download_pdf_bt__icon">Download as PDF</span></button>`;
+				DOWNLOAD_PDF_WRAPPER.innerHTML = `<button type="button" id="download_pdf_bt"><span class="download_pdf_bt__icon"><ion-icon name="download-outline"></ion-icon></span><span class="download_pdf_bt__text">Download as PDF</span></button>`;
 				document.getElementById("download_pdf_bt").onclick = function () {
 					console.log("PDF_ARRAY", PDF_ARRAY);
 					createPDF(PDF_ARRAY, currentDate);

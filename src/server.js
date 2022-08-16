@@ -11,14 +11,14 @@ Lib.io.sockets.on("connection", connected);
 function connected(socket) {
 	console.log("A new client was registed");
 	socket.on("join", (data) => {
-		Lib.join(data, socket)
+		Lib.join(data, socket);
 	});
 	socket.on("create", (data) => {
 		Lib.create(data, socket);
 	});
 
 	socket.on("addContentToDb", (senddata) => {
-		Lib.addContentToDb(senddata);
+		Lib.addContentToDb(senddata, socket);
 	});
 
 	socket.on("removeUserElement", (data) => {
@@ -28,7 +28,6 @@ function connected(socket) {
 		if (data.user === data.lobby) {
 			Lib.io.emit("ActiveLobbyDataRequest", { data: { name: data.user }, boolean: false });
 			socket.leave(data.lobby);
-			Lib.removeAllUsersFromArray(data);
 			Lib.io.to(data.lobby).emit("SystemMessage", {
 				message: `${data.user} left the lobby, the room will be terminated; you will be redirected shortly.`,
 			});
@@ -92,9 +91,15 @@ function connected(socket) {
 	socket.on("getDataForEnd", (data) => {
 		Lib.getDataForEnd(data);
 	});
-	
+
+	Lib.io.sockets.on("connection", function (socket) {
+		socket.on("ping", function () {
+			socket.emit("pong");
+		});
+	});
+
 	socket.on("disconnect", () => {
-		Lib.disconnect(socket)
+		Lib.disconnect(socket);
 	});
 }
 // Main content - end -
