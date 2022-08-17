@@ -46,8 +46,13 @@ let gameIsOn = [];
  * @public
  */
 let roomNo = {};
+/**
+ * An Object which holds a Timestamp when the round was created
+ * @returns {*} Number
+ * @public
+ */
+let duration = {};
 // Global variables end
-
 function join(data, socket) {
 	let lobby = roomNo[data.lobby];
 	if (data.name.length > 15) {
@@ -184,6 +189,7 @@ function removeDisconnectFromArray(userToRoom, socket) {
 }
 function removeStartedRoomFromArray(array, data) {
 	const ARRAYLENGTH = array.length;
+	console.log(array);
 	for (let i = 0; i < ARRAYLENGTH; i++) {
 		const index = array.findIndex((e) => {
 			return e.lobby == data.lobby;
@@ -202,16 +208,17 @@ function removeStartedRoomFromArray(array, data) {
 }
 async function addContentToDb(data) {
 	data.data.round = rounds[data.data.game]; // Gives the dataflow the current round
-
+	console.log('Data from addContentToDb', data)
 	let content = new Text({
 		text: data.data.text,
-		to: parseInt(data.data.to),
-		from: parseInt(data.data.from),
+		to: data.data.to,
+		from: data.data.from,
 		fromStr: data.data.fromStr,
 		round: data.data.round,
 		game: data.data.game,
 		index: data.index,
 	});
+	console.log('content', content)
 	await content.save();
 
 	const quantity = gameIsOn.filter((e) => {
@@ -259,7 +266,11 @@ async function getDataForEnd(data) {
 		return e.lobby == data.object.data.game;
 	});
 	searchdata = await Text.find({ game: data.object.data.game });
-	finaldata = { data: searchdata, all: currentRoom.length, curRoomUsers: currentRoom };
+	let duration_res = Date.now() - duration[data.object.data.game];
+	duration_res = (duration_res / 1000) / 60;
+	duration_res = Math.round((duration_res + Number.EPSILON) * 100) / 100;
+	console.log('dur', duration_res);
+	finaldata = { data: searchdata, all: currentRoom.length, curRoomUsers: currentRoom, duration: duration_res, lobby: data.object.data.game};
 	io.in(data.object.data.game).emit("endGame", finaldata);
 	await Text.deleteMany({ game: data.object.data.game });
 	clearData(data.object.data.game);
@@ -269,8 +280,9 @@ function clearData(game) {
 	let filtered = gameIsOn.filter((e) => e.lobby === game);
 	filtered.forEach((e) => gameIsOn.splice(gameIsOn.indexOf(e), 1));
 	filtered.forEach((e) => delete users[e.socketid]);
+	delete roomNo[game];
 	delete rounds[game];
-	io.to(game).socketsLeave(game);
+	delete duration[game];
 }
 
 module.exports = {
@@ -301,4 +313,5 @@ module.exports = {
 	connectDB,
 	getData,
 	getDataForEnd,
+	duration
 };

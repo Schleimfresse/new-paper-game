@@ -66,6 +66,7 @@ function connected(socket) {
 	});
 
 	socket.on("StartGame", (data) => {
+		Lib.duration[data.lobby] = Date.now();
 		Lib.rounds[data.lobby] = 5;
 		Lib.removeStartedRoomFromArray(Lib.userToRoom, data);
 		const currentRoomUsers = Lib.gameIsOn.filter((e) => {
@@ -73,6 +74,11 @@ function connected(socket) {
 		});
 		Senddata = { gameIsOn: Lib.gameIsOn, users: Lib.users, all: currentRoomUsers.length };
 		Lib.io.in(data.lobby).emit("StartGame", Senddata);
+	});
+
+	socket.on("EndNextClick",(data) => {
+		console.log('data on server', data);
+		socket.to(data).emit("EndNextClick");
 	});
 
 	socket.on("SystemMessage", (data) => {
@@ -92,10 +98,12 @@ function connected(socket) {
 		Lib.getDataForEnd(data);
 	});
 
-	Lib.io.sockets.on("connection", function (socket) {
-		socket.on("ping", function () {
-			socket.emit("pong");
-		});
+	socket.on("leaveRoom", (data) => {
+		socket.leave(data);
+	});
+
+	socket.on("ping", function () {
+		socket.emit("pong");
 	});
 
 	socket.on("disconnect", () => {

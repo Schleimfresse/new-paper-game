@@ -47,6 +47,7 @@ body {
 	border-radius: 20px;
 	padding: 1em;
 	position: absolute;
+	z-index: 10;
 }
 #player-list {
 	transform-style: preserve-3d;
@@ -118,6 +119,7 @@ body {
 	background-clip: padding-box;
 	align-items: center;
 	flex-direction: column;
+	z-index: 10;
 }
 #form,
 #formCreate {
@@ -398,7 +400,8 @@ header #copyrights {
 	margin-bottom: 10px;
 }
 .information-wrapper:first-child,
-.information-wrapper:nth-child(2) {
+.information-wrapper:nth-child(2),
+.information-wrapper:nth-child(3) {
 	display: none;
 }
 #end-section {
@@ -407,6 +410,7 @@ header #copyrights {
 	min-height: 100%;
 	align-items: center;
 	justify-content: center;
+	z-index: 10;
 }
 #end-card {
 	height: 60vh;
@@ -414,6 +418,7 @@ header #copyrights {
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
+	z-index: inherit;
 }
 #end-card-users {
 	overflow-y: scroll;
@@ -499,13 +504,14 @@ header #copyrights {
 	position: absolute;
 	min-width: 100%;
 }
-#download-pdf-wrapper {
+#end-bt-wrapper {
 	position: absolute;
 	bottom: 100px;
 	display: flex;
 	justify-content: center;
+	z-index: 10;
 }
-#download_pdf_bt {
+.bt2 {
 	display: flex;
 	height: 50px;
 	padding: 0;
@@ -520,23 +526,35 @@ header #copyrights {
 	cursor: pointer;
 }
 
-#download_pdf_bt:hover {
+.bt2:hover {
 	background: #013f9c;
 }
 
-#download_pdf_bt:active {
+.bt2:active {
 	background: #00398f;
 }
 
-.download_pdf_bt__text,
-.download_pdf_bt__icon {
+.bt2:last-child{
+	background: rgb(0, 231, 212);
+}
+
+.bt2:hover:last-child {
+	background: rgb(0, 214, 196);
+}
+
+.bt2:active:last-child {
+	background: rgb(0, 190, 175);
+}
+
+.bt__text,
+.bt__icon {
 	display: inline-flex;
 	align-items: center;
 	padding: 0 24px;
 	color: #fff;
 	height: 100%;
 }
-.download_pdf_bt__icon {
+.bt__icon {
 	font-size: 1.5em;
 	background: rgba(0, 0, 0, 0.08);
 }

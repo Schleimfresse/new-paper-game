@@ -38,15 +38,24 @@ const ENDCONTENT = document.getElementById("end-card-content");
 const ENDFOOTER = document.getElementById("end-card-content-footer");
 const ENDCARDUSERS = document.getElementById("end-card-users");
 const SPAN = document.createElement("span");
-const DOWNLOAD_PDF_WRAPPER = document.getElementById("download-pdf-wrapper");
-const PING_ELEMENT = document.getElementById('ping-update');
-const PING_BOX = document.getElementById('ping-box');
+const END_BUTTON_WRAPPER = document.getElementById("end-bt-wrapper");
+const PING_ELEMENT = document.getElementById("ping-update");
+const PING_BOX = document.getElementById("ping-box");
+const DURATION_ELEMENT = document.getElementById("duration");
+const READY_BOX = document.getElementById("ready-box");
 const x = 5;
 let i = 0;
 let you = "";
 let LASTCLICK = 0;
 let ICON = "";
 let prevObj = undefined;
+let currentChild = 0;
+let called = false;
+let openNewTabController = 0;
+let date_instance = new Date();
+let currentDate =
+	date_instance.getFullYear() + "-" + (date_instance.getMonth() + 1) + "-" + date_instance.getDate();
+
 function IconChooser(data) {
 	if (data.icon) {
 		ICON = '<ion-icon class="icon-spacing-right icon-size-small" name="diamond-outline"></ion-icon>';
@@ -56,6 +65,7 @@ function IconChooser(data) {
 		return ICON;
 	}
 }
+
 function BackToForm(data) {
 	PLAYERLIST.innerHTML = "";
 	CHATAREA.innerHTML = "";
@@ -64,6 +74,7 @@ function BackToForm(data) {
 	PREROOM.style.display = "none";
 	JCSELC.style.display = "block";
 }
+
 function createElement(data, boolean) {
 	IconChooser(data);
 	const ITEM = document.createElement("li");
@@ -78,6 +89,7 @@ function createElement(data, boolean) {
 	}
 	document.getElementById(`${data.name}`).children[1].innerText += data.name + you;
 }
+
 function SystemMessage(data) {
 	const ITEMSys = document.createElement("div");
 	ITEMSys.setAttribute("class", "system-message");
@@ -85,6 +97,7 @@ function SystemMessage(data) {
 	CHATAREA.appendChild(ITEMSys);
 	CHATAREA.scrollTop = CHATAREA.scrollHeight;
 }
+
 function updateReadyPLayers(data) {
 	i++;
 	USERSREADY.innerText = i;
@@ -109,7 +122,7 @@ function getInfo(input) {
 		from = sessionStorage.getItem("from");
 		fromStr = sessionStorage.getItem("name");
 		return (data = {
-			data: { text: input, to: to, fromStr: fromStr, from: from, game: game, round: null },
+			data: { text: input, to: parseInt(to), fromStr: fromStr, from: parseInt(from), game: game, round: "" },
 			index: index,
 		});
 	}
@@ -143,7 +156,8 @@ function StartGame(data) {
 	HEADER.style.display = "none";
 	PREROOM.style.display = "none";
 	GAMESECTION.style.display = "flex";
-	document.querySelectorAll('.information-wrapper').style.display = 'flex';
+	READY_BOX.children[0].style.display = "flex";
+	READY_BOX.children[1].style.display = "flex";
 	const Element = data.gameIsOn.find((e) => {
 		return e.name == data.users[SOCKET.id];
 	});
@@ -180,71 +194,75 @@ function getElementsForEnd(boolean) {
 }
 
 function endGame(data) {
-	let c = 0;
-	let x = 0;
-	let called = false;
 	data.data.sort((a, b) => {
 		return a.index - b.index;
 	});
+	READY_BOX.children[1].style.display = "none";
+	READY_BOX.children[2].style.display = "flex";
+	DURATION_ELEMENT.innerText = `${data.duration} min`;
 	const PDF_ARRAY = data.data.slice();
-	console.log("PDF_ARRAY", PDF_ARRAY);
 	for (e of data.curRoomUsers) {
 		ENDCARDUSERS.innerHTML += `<span class="end-card-users" id="enduser-${e.playerindex}">${e.name}</span>`;
 		ENDCONTENT.innerHTML += `<div class="endcontent-box" id="enduser-${e.playerindex}-BOX"></div>`;
 	}
 	ENDCARDUSERS.children[0].classList.add("end-card-users-active");
-
 	sessionStorage.clear();
 	ROUND.innerText = "End!";
-	setTimeout(() => {
-		GAMESECTION.style.display = "none";
-		ENDSECTION.style.display = "flex";
-		ENDNEXT.addEventListener("click", () => {
-			if (data.data.length === 0) return;
-			if (prevObj != undefined && prevObj.index !== data.data[0].index) {
-				x++;
-				if (x === 1) {
-					c++;
-					document.getElementById(`enduser-${prevObj.index}-BOX`).style.display = "none";
-					getElementsForEnd(true).forEach((e) => {
-						e.classList.remove("end-card-users-active");
-					});
-					ENDCARDUSERS.children[c].classList.add("end-card-users-active");
-				}
-				if (x === 2) {
-					document.getElementById(
-						`enduser-${data.data[0].index}-BOX`
-					).innerHTML += `<div class="end-card-content-item"><span>${data.data[0].text}</span><br><span class="author">${data.data[0].fromStr}</span></div>`;
-					document.getElementById(`enduser-${data.data[0].index}-BOX`).style.display = "block";
-					prevObj = data.data.shift();
-					x = 0;
-				}
-			} else {
-				document.getElementById(
-					`enduser-${data.data[0].index}-BOX`
-				).innerHTML += `<div class="end-card-content-item"><span>${data.data[0].text}</span><br><span class="author">${data.data[0].fromStr}</span></div>`;
-				document.getElementById(`enduser-${data.data[0].index}-BOX`).style.display = "block";
-				prevObj = data.data.shift();
-			}
-	
-			if (data.data.length === 0 && !called) {
-				getElementsForEnd(true).forEach((element) => {
-					element.setAttribute("onclick", "changeTab(this.id);");
-					element.style.cursor = "pointer";
-				});
-				ENDNEXT.style.display = "none";
-				called = true;
-				DOWNLOAD_PDF_WRAPPER.innerHTML = `<button type="button" id="download_pdf_bt"><span class="download_pdf_bt__icon"><ion-icon name="download-outline"></ion-icon></span><span class="download_pdf_bt__text">Download as PDF</span></button>`;
-				document.getElementById("download_pdf_bt").onclick = function () {
-					console.log("PDF_ARRAY", PDF_ARRAY);
-					createPDF(PDF_ARRAY, currentDate);
-				};
-			}
-		});
-	}, 1500)
-	
+	GAMESECTION.style.display = "none";
+	ENDSECTION.style.display = "flex";
+	ENDNEXT.addEventListener("click", () => {
+		onEndNextClick(data, PDF_ARRAY);
+		SOCKET.emit("EndNextClick", data.lobby);
+	});
+	SOCKET.on("EndNextClick", () => {
+		onEndNextClick(data, PDF_ARRAY);
+	});
 }
 
+function onEndNextClick(data, PDF_ARRAY) {
+	if (data.data.length === 0) return;
+	if (prevObj != undefined && prevObj.index !== data.data[0].index) {
+		openNewTabController++;
+		if (openNewTabController === 1) {
+			currentChild++;
+			document.getElementById(`enduser-${prevObj.index}-BOX`).style.display = "none";
+			getElementsForEnd(true).forEach((e) => {
+				e.classList.remove("end-card-users-active");
+			});
+			ENDCARDUSERS.children[currentChild].classList.add("end-card-users-active");
+		}
+		if (openNewTabController === 2) {
+			document.getElementById(
+				`enduser-${data.data[0].index}-BOX`
+			).innerHTML += `<div class="end-card-content-item"><span>${data.data[0].text}</span><br><span class="author">${data.data[0].fromStr}</span></div>`;
+			document.getElementById(`enduser-${data.data[0].index}-BOX`).style.display = "block";
+			prevObj = data.data.shift();
+			openNewTabController = 0;
+		}
+	} else {
+		console.log("trigger 3");
+		document.getElementById(
+			`enduser-${data.data[0].index}-BOX`
+		).innerHTML += `<div class="end-card-content-item"><span>${data.data[0].text}</span><br><span class="author">${data.data[0].fromStr}</span></div>`;
+		document.getElementById(`enduser-${data.data[0].index}-BOX`).style.display = "block";
+		prevObj = data.data.shift();
+	}
+
+	if (data.data.length === 0 && !called) {
+		getElementsForEnd(true).forEach((element) => {
+			element.setAttribute("onclick", "changeTab(this.id);");
+			element.style.cursor = "pointer";
+		});
+		SOCKET.emit("leaveRoom", data.lobby);
+		ENDNEXT.style.display = "none";
+		called = true;
+		END_BUTTON_WRAPPER.innerHTML += `<button type="button" id="download_pdf" class="bt2 icon-spacing-right"><span class="bt__icon"><ion-icon name="download-outline"></ion-icon></span><span class="bt__text">Download as PDF</span></button> <button type="button" onclick="window.location.href = '/'" class="bt2"><span class="bt__icon"><ion-icon name="home-outline"></ion-icon></span><span class="bt__text">Home</span></button>`;
+		document.getElementById("download_pdf").onclick = function () {
+			console.log("PDF_ARRAY", PDF_ARRAY);
+			createPDF(PDF_ARRAY, currentDate);
+		};
+	}
+}
 function createPDF(data, date) {
 	let doc = {
 		content: [],
@@ -252,25 +270,26 @@ function createPDF(data, date) {
 			header: {
 				fontSize: 22,
 				bold: true,
-				lineHeight: 1.2,
 				characterSpacing: 1.2,
+				//decoration: "underline"
 			},
-			paragrapgh: {
-				lineHeight: 1.2,
+			paragraph: {
+				lineHeight: 1.2
 			},
 			author: {
-				alignment: 'right',
-				color: '#a3a3a3',
+				alignment: "right",
+				color: "#a3a3a3"
 			},
-		},
+		}
 	};
 	while (data.length !== 0) {
 		if (prevObj === undefined || prevObj.index !== data[0].index) {
+			let line = {canvas: [{ type: 'line', x1: 0, y1: 1, x2: 595-2*40, y2: 1, lineWidth: 1 }]}
 			let header = { text: data[0].fromStr, style: "header" };
-			let textcontent = { text: data[0].text, style: "paragraph" };
+			let textcontent = { text: `\n${data[0].text}`, style: "paragraph" };
 			let author = { text: data[0].fromStr, style: "author" };
-			console.log("header", header);
 			doc.content.push(header);
+			doc.content.push(line);
 			doc.content.push(textcontent);
 			doc.content.push(author);
 			prevObj = data.shift();

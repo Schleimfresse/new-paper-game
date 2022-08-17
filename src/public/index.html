@@ -27,7 +27,6 @@
 			crossorigin="anonymous"
 			referrerpolicy="no-referrer"
 		></script>
-		<script type="text/javascript" defer src="js/helpers/date.js"></script>
 		<script type="text/javascript" defer src="js/Lib/Lib.js"></script>
 		<script type="text/javascript" defer src="js/chat.js"></script>
 		<script type="text/javascript" defer src="js/game.js"></script>
@@ -84,11 +83,15 @@
 			<div id="ready-box">
 				<div class="information-wrapper">
 					<ion-icon class="icon-size-small icon-spacing-right" name="attach-outline"></ion-icon
-					>Round:&nbsp;<span id="round">1</span>
+					><span>Round:&nbsp;</span><span id="round">1</span>
 				</div>
 				<div class="information-wrapper">
 					<ion-icon class="icon-size-small icon-spacing-right" name="checkmark-circle-outline"></ion-icon
 					><span id="usersReady">0</span>/<span id="allUsers"></span>
+				</div>
+				<div class="information-wrapper">
+					<ion-icon class="icon-size-small icon-spacing-right" name="hourglass-outline"></ion-icon>
+					<span>Duration:&nbsp;</span><span id="duration"></span>
 				</div>
 				<div class="information-wrapper" id="ping-box">
 					<svg
@@ -119,7 +122,7 @@
 			<div id="textinput-wrapper">
 				<div id="showcase"></div>
 				<textarea id="game-textarea"></textarea>
-				<input type="submit" id="game-text-submit" />
+				<input type="submit" value="Submit" id="game-text-submit" />
 			</div>
 		</section>
 		<section id="end-section">
@@ -130,7 +133,8 @@
 					<div id="end-card-content-footer"></div>
 				</div>
 			</div>
-			<div id="download-pdf-wrapper"></div>
+			<div id="end-bt-wrapper">
+			</div>
 		</section>
 	</body>
 </html>

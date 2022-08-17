@@ -44,24 +44,23 @@ FORMCREATE.addEventListener("submit", () => {
 	SOCKET.emit("create", name);
 });
 
-setInterval(function() {
+setInterval(function () {
 	startTime = Date.now();
-	SOCKET.emit('ping');
+	SOCKET.emit("ping");
 }, 2000);
-  
-  SOCKET.on('pong', function() {
+
+SOCKET.on("pong", () => {
 	let latency = Date.now() - startTime;
-	if (latency >= 0) {
-		PING_BOX.style.color = '#1c9e30'
+	if (latency >= 100) {
+		PING_BOX.style.color = "#cf0404";
+	} else if (latency >= 30) {
+		PING_BOX.style.color = "#dbc818";
+	} else if (latency >= 0) {
+		PING_BOX.style.color = "#1c9e30";
 	}
-	else if (latency >= 30) {
-		PING_BOX.style.color = '#dbc818'
-	}
-	else if (latency >= 100) {
-		PING_BOX.style.color = '#cf0404'
-	}
-	PING_ELEMENT.innerText = `${latency} ms`
-  });
+	PING_ELEMENT.innerText = `${latency} ms`;
+});
+
 // EventListner - end -
 
 // client <- server - start -

@@ -6,7 +6,7 @@
 
 ## index? && from? [+]
 
-## dc in game
+## dc in game <------------------------------
 
 - data clearing
 - func
@@ -15,7 +15,7 @@
 
 ## function DataFromDB(data) {} - remaster!
 
-## end state
+## end state [+/-]
 
 - information clearing
   - Arrays server
@@ -27,4 +27,4 @@
 
 ## ActiveLobbyDataRequest remove();
 
-## Ping color management [-]
+## Ping color management [+]
