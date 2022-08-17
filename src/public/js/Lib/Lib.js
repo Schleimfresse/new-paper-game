@@ -274,17 +274,17 @@ function createPDF(data, date) {
 				//decoration: "underline"
 			},
 			paragraph: {
-				lineHeight: 1.2
+				lineHeight: 1.2,
 			},
 			author: {
 				alignment: "right",
-				color: "#a3a3a3"
+				color: "#a3a3a3",
 			},
-		}
+		},
 	};
 	while (data.length !== 0) {
 		if (prevObj === undefined || prevObj.index !== data[0].index) {
-			let line = {canvas: [{ type: 'line', x1: 0, y1: 1, x2: 595-2*40, y2: 1, lineWidth: 1 }]}
+			let line = { canvas: [{ type: "line", x1: 0, y1: 1, x2: 595 - 2 * 40, y2: 1, lineWidth: 1 }] };
 			let header = { text: data[0].fromStr, style: "header" };
 			let textcontent = { text: `\n${data[0].text}`, style: "paragraph" };
 			let author = { text: data[0].fromStr, style: "author" };
@@ -331,18 +331,18 @@ function success(data) {
 
 function ActiveLobbyDataRequest(data) {
 	if (!data.boolean) {
-		const elements = Array.from(OPENLOBBYS.children[0].children);
-		const result = elements.find((e) => {
-			return e.textContent.includes(data.data.name);
-		});
-		result.remove();
+		OPENLOBBYS.children[0].textContent = '';
+		for(const [value] of Object.entries(data.data)) {
+			OPENLOBBYS.children[0].innerHTML += `<span>${value}<br /></span>`;
+		};
 	}
-	if (data.boolean) {
+	if (data.boolean && Object.keys(data.data).length !== 0) {
 		OPENLOBBYS.style.display = "block";
-		for (object of data.data) {
-			if (!object.icon) return;
-			OPENLOBBYS.children[0].innerHTML += `<span>${object.name}<br /></span>`;
-		}
+		console.log(data);
+		OPENLOBBYS.children[0].textContent = '';
+		for(const [value] of Object.entries(data.data)) {
+			OPENLOBBYS.children[0].innerHTML += `<span>${value}<br /></span>`;
+		};
 	}
 	if (!OPENLOBBYS.children[0].hasChildNodes()) {
 		OPENLOBBYS.style.display = "none";

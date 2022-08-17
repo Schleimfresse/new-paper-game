@@ -10,6 +10,9 @@ Lib.io.sockets.on("connection", connected);
 // Main content - start -
 function connected(socket) {
 	console.log("A new client was registed");
+	console.log(Lib.roomNo)
+	Lib.io.emit("ActiveLobbyDataRequest", { data: Lib.roomNo, boolean: true });
+
 	socket.on("join", (data) => {
 		Lib.join(data, socket);
 	});
@@ -26,7 +29,7 @@ function connected(socket) {
 		socket.leave(data.lobby);
 		Lib.io.to(data.lobby).emit("removeUserElement", data);
 		if (data.user === data.lobby) {
-			Lib.io.emit("ActiveLobbyDataRequest", { data: { name: data.user }, boolean: false });
+			Lib.io.emit("ActiveLobbyDataRequest", { data: Lib.roomNo, boolean: false });
 			socket.leave(data.lobby);
 			Lib.io.to(data.lobby).emit("SystemMessage", {
 				message: `${data.user} left the lobby, the room will be terminated; you will be redirected shortly.`,
@@ -44,10 +47,6 @@ function connected(socket) {
 
 	socket.on("NewUserUpdateOtherClients", (data) => {
 		socket.to(data.room).emit("AddElementToOtherClients", data);
-	});
-
-	socket.on("ActiveLobbyDataRequest", () => {
-		Lib.io.emit("ActiveLobbyDataRequest", { data: Lib.userToRoom, boolean: true });
 	});
 
 	socket.on("getInfoForChat", (data) => {

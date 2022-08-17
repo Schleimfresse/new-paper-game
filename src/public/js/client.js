@@ -3,10 +3,6 @@ SOCKET.on("ActiveLobbyDataRequest", (data) => {
 	ActiveLobbyDataRequest(data);
 });
 
-SOCKET.on("connect", () => {
-	SOCKET.emit("ActiveLobbyDataRequest");
-});
-
 SOCKET.on("success", (data) => {
 	success(data);
 });

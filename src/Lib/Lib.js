@@ -123,7 +123,7 @@ function create(data, socket) {
 		socketid: socket.id,
 		icon: true,
 	});
-	io.emit("ActiveLobbyDataRequest", { data: userToRoom, boolean: true });
+	io.emit("ActiveLobbyDataRequest", { data: roomNo, boolean: true });
 	console.log("usertoroom", userToRoom);
 }
 
@@ -150,7 +150,6 @@ function disconnect(socket) {
 		io.to(dcuserFinal.lobby).emit("removeUserElement", { user: dcuserFinal.name });
 		if (dcuserFinal.name === dcuserFinal.lobby) {
 			console.log("trigger");
-			io.emit("ActiveLobbyDataRequest", { data: { name: dcuserFinal.name }, boolean: false });
 			socket.leave(dcuserFinal.lobby);
 			io.to(dcuserFinal.lobby).socketsLeave(dcuserFinal.lobby);
 			removeAllUsersFromArray(dcuserFinal);
@@ -158,6 +157,7 @@ function disconnect(socket) {
 				// When lobby is empty (dcuser.lobby), because all clients left and the room then gets deleted, the room gets removed from the array
 				delete roomNo[dcuserFinal.lobby];
 			}
+			io.emit("ActiveLobbyDataRequest", { data: roomNo, boolean: false });
 			io.to(dcuserFinal.lobby).emit("SystemMessage", {
 				message: `${dcuserFinal.name} disconnected, the room will be terminated; you will be redirected shortly.`,
 			});
