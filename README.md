@@ -4,8 +4,8 @@ A digital version of a game I play with my friends.
 
 ## Progress
 
-Still in progress; round about 100/100%<br>
-Ready to puplish.
+Still in progress;<br>round about 100/100%
+
  - Engine is working
  - QoL features comming soon
 [########--]
@@ -15,6 +15,7 @@ Ready to puplish.
 - QoL changes
 - Actual gameroom added
 - Design remastered
+- Downloadable PDFs at the endscreen
 - ...
 
 ## Licence
