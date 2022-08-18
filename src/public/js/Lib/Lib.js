@@ -44,6 +44,7 @@ const PING_BOX = document.getElementById("ping-box");
 const DURATION_ELEMENT = document.getElementById("duration");
 const READY_BOX = document.getElementById("ready-box");
 const SUBMIT_ON_ENTER_BT = document.getElementById("submit-on-enter");
+const BLURED = document.getElementById('blured');
 const x = 5;
 let i = 0;
 let you = "";
@@ -52,6 +53,7 @@ let ICON = "";
 let prevObj = undefined;
 let currentChild = 0;
 let called = false;
+let SubmitOnEnter_Called = true;
 let openNewTabController = 0;
 let date_instance = new Date();
 let currentDate =
@@ -175,6 +177,7 @@ function StartGame(data) {
 }
 
 function startNewRound(data) {
+	SubmitOnEnter_Called = true;
 	ROUND.innerText = data.rounds.curRound;
 	GAMETEXTSUBMIT.removeAttribute("disabled");
 	const getNeededObj = data.senddata.find((e) => {
@@ -352,15 +355,16 @@ function ActiveLobbyDataRequest(data) {
 
 function SubmitOnEnter_SET() {
 	if (SUBMIT_ON_ENTER_BT.checked) {
-		localStorage.setItem("submitOnEnter", true);
+		localStorage.setItem("submitOnEnter", JSON.stringify(true));
 	} else if (!SUBMIT_ON_ENTER_BT.checked) {
-		localStorage.setItem("submitOnEnter", false);
+		localStorage.setItem("submitOnEnter", JSON.stringify(false));
 	}
 }
 
 function SubmitOnEnter(event) {
-	if (localStorage.getItem("submitOnEnter") && event.key === "Enter") {
+	if (JSON.parse(localStorage.getItem("submitOnEnter")) && event.key === "Enter" && SubmitOnEnter_Called) {
 		submitText(GAMETEXTAREA.value);
+		SubmitOnEnter_Called = false;
 	}
 }
 

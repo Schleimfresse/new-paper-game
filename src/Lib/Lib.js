@@ -132,47 +132,59 @@ function disconnect(socket) {
 	console.log("disconn user: ", users[socket.id]);
 	let dcuser = users[socket.id];
 	if (dcuser != undefined) {
-		console.log("usertoroom", userToRoom);
 		let dcuserFinal = userToRoom.find((e) => {
 			return e.name == dcuser;
 		});
-		console.log(dcuser);
-		console.log(dcuserFinal);
+		array = userToRoom;
+		controll = false;
 		if (dcuserFinal === undefined) {
 			dcuserFinal = gameIsOn.find((e) => {
 				return e.name == dcuser;
 			});
+			array = gameIsOn;
+			controll = true;
 		}
-		console.log("gameison", gameIsOn);
-		console.log(dcuser);
 		Systemdata = { message: `${dcuserFinal.name} has left the lobby` };
 		io.to(dcuserFinal.lobby).emit("SystemMessage", Systemdata);
 		io.to(dcuserFinal.lobby).emit("removeUserElement", { user: dcuserFinal.name });
-		if (dcuserFinal.name === dcuserFinal.lobby) {
-			console.log("trigger");
-			socket.leave(dcuserFinal.lobby);
-			io.to(dcuserFinal.lobby).socketsLeave(dcuserFinal.lobby);
-			removeAllUsersFromArray(dcuserFinal);
-			if (io.sockets.adapter.rooms.get(dcuserFinal.lobby) === undefined) {
-				// When lobby is empty (dcuser.lobby), because all clients left and the room then gets deleted, the room gets removed from the array
-				delete roomNo[dcuserFinal.lobby];
-			}
-			io.emit("ActiveLobbyDataRequest", { data: roomNo, boolean: false });
+		if (dcuserFinal.name === dcuserFinal.lobby && !controll) {
 			io.to(dcuserFinal.lobby).emit("SystemMessage", {
 				message: `${dcuserFinal.name} disconnected, the room will be terminated; you will be redirected shortly.`,
 			});
 			setTimeout(() => {
 				io.to(dcuserFinal.lobby).emit("terminate");
 			}, 4000);
+		}
+		if (controll) {
+			console.log("controll trigger", controll);
+			io.to(dcuserFinal.lobby).emit("GameIsOn_interruption", {
+				message: `${dcuserFinal.name} has left the game or disconnected, the round will end shortly;<br>you will be redirected in a moment.`,
+			});
+		}
+		if (controll || dcuserFinal.lobby === dcuserFinal.name) {
+			console.log("trigger", controll);
+			socket.leave(dcuserFinal.lobby);
+			io.to(dcuserFinal.lobby).socketsLeave(dcuserFinal.lobby);
+			let filtered = array.filter((e) => e.lobby === dcuserFinal.lobby);
+			filtered.forEach((e) => delete users[e.socketid]);
+			removeAllUsersFromArray(dcuserFinal, array);
+			if (io.sockets.adapter.rooms.get(dcuserFinal.lobby) === undefined) {
+				// When lobby is empty (dcuser.lobby), because all clients left and the room then gets deleted, the room gets removed from the array
+				delete roomNo[dcuserFinal.lobby];
+			}
+			io.emit("ActiveLobbyDataRequest", { data: roomNo, boolean: false });
 		} else {
 			socket.leave(dcuserFinal.lobby);
-			removeDisconnectFromArray(userToRoom, socket);
+			removeDisconnectFromArray(array, socket);
 			if (io.sockets.adapter.rooms.get(dcuserFinal.lobby) == undefined) {
 				delete roomNo[dcuserFinal.lobby];
 			}
+			delete users[socket.id];
 		}
 	}
-	delete users[socket.id];
+	console.table(users);
+	console.table(userToRoom);
+	console.table(gameIsOn);
 }
 
 /**
@@ -181,11 +193,11 @@ function disconnect(socket) {
  * @returns the updated userToRoom array
  * @public
  */
-function removeDisconnectFromArray(userToRoom, socket) {
-	const indexOfObject = userToRoom.findIndex((e) => {
+function removeDisconnectFromArray(array, socket) {
+	const indexOfObject = array.findIndex((e) => {
 		return e.socketid == socket.id;
 	});
-	userToRoom.splice(indexOfObject, 1);
+	array.splice(indexOfObject, 1);
 }
 function removeStartedRoomFromArray(array, data) {
 	const ARRAYLENGTH = array.length;
@@ -208,7 +220,7 @@ function removeStartedRoomFromArray(array, data) {
 }
 async function addContentToDb(data) {
 	data.data.round = rounds[data.data.game]; // Gives the dataflow the current round
-	console.log('Data from addContentToDb', data)
+	console.log("Data from addContentToDb", data);
 	let content = new Text({
 		text: data.data.text,
 		to: data.data.to,
@@ -218,7 +230,7 @@ async function addContentToDb(data) {
 		game: data.data.game,
 		index: data.index,
 	});
-	console.log('content', content)
+	console.log("content", content);
 	await content.save();
 
 	const quantity = gameIsOn.filter((e) => {
@@ -235,12 +247,12 @@ function checkName(data) {
 		return true;
 	}
 }
-function removeAllUsersFromArray(dcuser) {
-	const indexOfObject = userToRoom.filter((e) => {
+function removeAllUsersFromArray(dcuser, array) {
+	const indexOfObject = array.filter((e) => {
 		return e.lobby == dcuser.lobby;
 	});
 	for (i = indexOfObject.length - 1; i >= 0; i--) {
-		userToRoom.splice(indexOfObject[i], 1);
+		array.splice(indexOfObject[i], 1);
 	}
 }
 async function getData(data) {
@@ -267,10 +279,16 @@ async function getDataForEnd(data) {
 	});
 	searchdata = await Text.find({ game: data.object.data.game });
 	let duration_res = Date.now() - duration[data.object.data.game];
-	duration_res = (duration_res / 1000) / 60;
+	duration_res = duration_res / 1000 / 60;
 	duration_res = Math.round((duration_res + Number.EPSILON) * 100) / 100;
-	console.log('dur', duration_res);
-	finaldata = { data: searchdata, all: currentRoom.length, curRoomUsers: currentRoom, duration: duration_res, lobby: data.object.data.game};
+	console.log("dur", duration_res);
+	finaldata = {
+		data: searchdata,
+		all: currentRoom.length,
+		curRoomUsers: currentRoom,
+		duration: duration_res,
+		lobby: data.object.data.game,
+	};
 	io.in(data.object.data.game).emit("endGame", finaldata);
 	await Text.deleteMany({ game: data.object.data.game });
 	clearData(data.object.data.game);
@@ -313,5 +331,5 @@ module.exports = {
 	connectDB,
 	getData,
 	getDataForEnd,
-	duration
+	duration,
 };

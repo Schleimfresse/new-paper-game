@@ -1,10 +1,11 @@
 // init - start -
-if (localStorage.getItem('submitOnEnter') === null) {
-	localStorage.setItem('submitOnEnter', false)
+if (JSON.parse(localStorage.getItem("submitOnEnter")) === null) {
+	localStorage.setItem('submitOnEnter', JSON.stringify(false))
 }
-if (localStorage.getItem('submitOnEnter')) {
+if (JSON.parse(localStorage.getItem("submitOnEnter"))) {
 	SUBMIT_ON_ENTER_BT.setAttribute('checked', true);
 }
+
 // init - end -
 
 // on success - start -
@@ -60,9 +61,9 @@ setInterval(function () {
 
 SOCKET.on("pong", () => {
 	let latency = Date.now() - startTime;
-	if (latency >= 100) {
+	if (latency >= 150) {
 		PING_BOX.style.color = "#cf0404";
-	} else if (latency >= 30) {
+	} else if (latency >= 50) {
 		PING_BOX.style.color = "#dbc818";
 	} else if (latency >= 0) {
 		PING_BOX.style.color = "#1c9e30";
@@ -107,7 +108,7 @@ SOCKET.on("fail", (data) => {
 });
 
 SOCKET.on("terminate", () => {
-	window.open("/", "_self");
+	window.location.href = '/'
 });
 
 SOCKET.on("reset", () => {

@@ -17,3 +17,12 @@ SOCKET.on("endGame", (data) => {
 SOCKET.on("startNewRound", (data) => {
 	startNewRound(data);
 });
+
+SOCKET.on("GameIsOn_interruption", (data) => {
+	GAMESECTION.style.filter = "blur(30px)";
+	BLURED.style.display = "flex";
+	BLURED.children[0].innerHTML = data.message;
+	setTimeout(() => {
+		window.location.href = "/";
+	}, 3000);
+});
