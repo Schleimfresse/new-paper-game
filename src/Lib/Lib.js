@@ -156,13 +156,11 @@ function disconnect(socket) {
 			}, 4000);
 		}
 		if (controll) {
-			console.log("controll trigger", controll);
 			io.to(dcuserFinal.lobby).emit("GameIsOn_interruption", {
 				message: `${dcuserFinal.name} has left the game or disconnected, the round will end shortly;<br>you will be redirected in a moment.`,
 			});
 		}
 		if (controll || dcuserFinal.lobby === dcuserFinal.name) {
-			console.log("trigger", controll);
 			socket.leave(dcuserFinal.lobby);
 			io.to(dcuserFinal.lobby).socketsLeave(dcuserFinal.lobby);
 			let filtered = array.filter((e) => e.lobby === dcuserFinal.lobby);
@@ -182,9 +180,6 @@ function disconnect(socket) {
 			delete users[socket.id];
 		}
 	}
-	console.table(users);
-	console.table(userToRoom);
-	console.table(gameIsOn);
 }
 
 /**
@@ -201,7 +196,6 @@ function removeDisconnectFromArray(array, socket) {
 }
 function removeStartedRoomFromArray(array, data) {
 	const ARRAYLENGTH = array.length;
-	console.log(array);
 	for (let i = 0; i < ARRAYLENGTH; i++) {
 		const index = array.findIndex((e) => {
 			return e.lobby == data.lobby;
@@ -214,7 +208,6 @@ function removeStartedRoomFromArray(array, data) {
 			});
 			obj.playerindex = filterforobjects.length + 1;
 			gameIsOn.push(obj);
-			console.table(gameIsOn);
 		}
 	}
 }
@@ -281,7 +274,6 @@ async function getDataForEnd(data) {
 	let duration_res = Date.now() - duration[data.object.data.game];
 	duration_res = duration_res / 1000 / 60;
 	duration_res = Math.round((duration_res + Number.EPSILON) * 100) / 100;
-	console.log("dur", duration_res);
 	finaldata = {
 		data: searchdata,
 		all: currentRoom.length,

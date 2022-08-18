@@ -183,7 +183,6 @@ function startNewRound(data) {
 	const getNeededObj = data.senddata.find((e) => {
 		return sessionStorage.getItem("from") == e.to && e.round == data.rounds.prevRound;
 	});
-	console.log("getNeededObj", getNeededObj);
 	sessionStorage.setItem("index", getNeededObj.index);
 	SHOWCASE.innerText = getNeededObj.text;
 }
@@ -244,7 +243,6 @@ function onEndNextClick(data, PDF_ARRAY) {
 			openNewTabController = 0;
 		}
 	} else {
-		console.log("trigger 3");
 		document.getElementById(
 			`enduser-${data.data[0].index}-BOX`
 		).innerHTML += `<div class="end-card-content-item"><span>${data.data[0].text}</span><br><span class="author">${data.data[0].fromStr}</span></div>`;
@@ -262,7 +260,6 @@ function onEndNextClick(data, PDF_ARRAY) {
 		called = true;
 		END_BUTTON_WRAPPER.innerHTML += `<button type="button" id="download_pdf" class="bt2 icon-spacing-right"><span class="bt__icon"><ion-icon name="download-outline"></ion-icon></span><span class="bt__text">Download as PDF</span></button> <button type="button" onclick="window.location.href = '/'" class="bt2"><span class="bt__icon"><ion-icon name="home-outline"></ion-icon></span><span class="bt__text">Home</span></button>`;
 		document.getElementById("download_pdf").onclick = function () {
-			console.log("PDF_ARRAY", PDF_ARRAY);
 			createPDF(PDF_ARRAY, currentDate);
 		};
 	}
@@ -342,7 +339,6 @@ function ActiveLobbyDataRequest(data) {
 	}
 	if (data.boolean && Object.keys(data.data).length !== 0) {
 		OPENLOBBYS.style.display = "block";
-		console.log(data);
 		OPENLOBBYS.children[0].textContent = "";
 		for (const [value] of Object.entries(data.data)) {
 			OPENLOBBYS.children[0].innerHTML += `<span>${value}<br /></span>`;
