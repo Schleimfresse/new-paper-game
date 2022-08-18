@@ -121,8 +121,10 @@
 		<section id="game-section">
 			<div id="textinput-wrapper">
 				<div id="showcase"></div>
-				<textarea id="game-textarea"></textarea>
+				<textarea onkeypress="SubmitOnEnter(event);" id="game-textarea"></textarea>
 				<input type="submit" value="Submit" id="game-text-submit" />
+				<div id="submit-on-enter-wrapper"><input class="icon-spacing-right" type="checkbox" value="Submit" id="submit-on-enter" /><span>Submit on enter</span></div>
+
 			</div>
 		</section>
 		<section id="end-section">

@@ -43,6 +43,7 @@ const PING_ELEMENT = document.getElementById("ping-update");
 const PING_BOX = document.getElementById("ping-box");
 const DURATION_ELEMENT = document.getElementById("duration");
 const READY_BOX = document.getElementById("ready-box");
+const SUBMIT_ON_ENTER_BT = document.getElementById("submit-on-enter");
 const x = 5;
 let i = 0;
 let you = "";
@@ -331,20 +332,42 @@ function success(data) {
 
 function ActiveLobbyDataRequest(data) {
 	if (!data.boolean) {
-		OPENLOBBYS.children[0].textContent = '';
-		for(const [value] of Object.entries(data.data)) {
+		OPENLOBBYS.children[0].textContent = "";
+		for (const [value] of Object.entries(data.data)) {
 			OPENLOBBYS.children[0].innerHTML += `<span>${value}<br /></span>`;
-		};
+		}
 	}
 	if (data.boolean && Object.keys(data.data).length !== 0) {
 		OPENLOBBYS.style.display = "block";
 		console.log(data);
-		OPENLOBBYS.children[0].textContent = '';
-		for(const [value] of Object.entries(data.data)) {
+		OPENLOBBYS.children[0].textContent = "";
+		for (const [value] of Object.entries(data.data)) {
 			OPENLOBBYS.children[0].innerHTML += `<span>${value}<br /></span>`;
-		};
+		}
 	}
 	if (!OPENLOBBYS.children[0].hasChildNodes()) {
 		OPENLOBBYS.style.display = "none";
 	}
+}
+
+function SubmitOnEnter_SET() {
+	if (SUBMIT_ON_ENTER_BT.checked) {
+		localStorage.setItem("submitOnEnter", true);
+	} else if (!SUBMIT_ON_ENTER_BT.checked) {
+		localStorage.setItem("submitOnEnter", false);
+	}
+}
+
+function SubmitOnEnter(event) {
+	if (localStorage.getItem("submitOnEnter") && event.key === "Enter") {
+		submitText(GAMETEXTAREA.value);
+	}
+}
+
+function submitText(input) {
+	GAMETEXTSUBMIT.setAttribute("disabled", true);
+	SOCKET.emit("addContentToDb", getInfo(input));
+	setTimeout(() => {
+		GAMETEXTAREA.value = "";
+	}, 200);
 }

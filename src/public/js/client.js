@@ -1,3 +1,12 @@
+// init - start -
+if (localStorage.getItem('submitOnEnter') === null) {
+	localStorage.setItem('submitOnEnter', false)
+}
+if (localStorage.getItem('submitOnEnter')) {
+	SUBMIT_ON_ENTER_BT.setAttribute('checked', true);
+}
+// init - end -
+
 // on success - start -
 SOCKET.on("ActiveLobbyDataRequest", (data) => {
 	ActiveLobbyDataRequest(data);
@@ -34,6 +43,10 @@ FORM.addEventListener("submit", () => {
 	let data = { lobby: lobbyName, name: name };
 	SOCKET.emit("join", data);
 });
+
+SUBMIT_ON_ENTER_BT.onclick = function(){
+	SubmitOnEnter_SET();
+};
 
 FORMCREATE.addEventListener("submit", () => {
 	let name = NAMEFIELD.value;

@@ -534,7 +534,7 @@ header #copyrights {
 	background: #00398f;
 }
 
-.bt2:last-child{
+.bt2:last-child {
 	background: rgb(0, 231, 212);
 }
 
@@ -578,4 +578,9 @@ header #copyrights {
 	100% {
 		transform: rotateZ(360deg);
 	}
+}
+
+#submit-on-enter {
+	margin-left: 64px;
+	margin-top: 2em;
 }
