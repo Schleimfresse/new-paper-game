@@ -4,13 +4,12 @@ Lib.static;
 Lib.bodyparsing;
 Lib.listen;
 Lib.connectDB();
-console.log('URI',process.env.URI);
 // initial - end -
 
 Lib.io.sockets.on("connection", connected);
 // Main content - start -
 function connected(socket) {
-	console.log("A new client was registed");
+	console.log("A new client was registed", process.env.URI);
 	console.log(Lib.roomNo)
 	Lib.io.emit("ActiveLobbyDataRequest", { data: Lib.roomNo, boolean: true });
 
