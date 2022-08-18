@@ -6,12 +6,12 @@
 
 ## index? && from? [+]
 
-## dc in game <------------------------------
+## dc in game <------------------------------ [+]
 
 - data clearing
 - func
 
-## dataflow controlling && cleaning
+## dataflow controlling && cleaning [+/-]
 
 ## function DataFromDB(data) {} - remaster!
 
@@ -28,3 +28,7 @@
 ## ActiveLobbyDataRequest remove();
 
 ## Ping color management [+]
+
+# Heroku
+ - .env file
+ - moongose / mongoDB

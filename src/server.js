@@ -4,6 +4,7 @@ Lib.static;
 Lib.bodyparsing;
 Lib.listen;
 Lib.connectDB();
+console.log('URI',process.env.URI);
 // initial - end -
 
 Lib.io.sockets.on("connection", connected);
