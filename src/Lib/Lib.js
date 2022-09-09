@@ -68,6 +68,14 @@ function join(data, socket) {
 		socket.emit("fail", data);
 		return;
 	}
+	const lobbylength = userToRoom.filter((e) => {
+		return e.lobby === data.lobby;
+	});
+	if (lobbylength.length === 6) {
+		data = { boolean: true, message: "This lobby is full" };
+		socket.emit("fail", data);
+		return;
+	}
 	if (!checkName(data)) {
 		data = {
 			boolean: true,

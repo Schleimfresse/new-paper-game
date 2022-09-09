@@ -65,7 +65,7 @@ function connected(socket) {
 
 	socket.on("StartGame", (data) => {
 		Lib.duration[data.lobby] = Date.now();
-		Lib.rounds[data.lobby] = 5;
+		Lib.rounds[data.lobby] = 1;
 		Lib.removeStartedRoomFromArray(Lib.userToRoom, data);
 		const currentRoomUsers = Lib.gameIsOn.filter((e) => {
 			return e.lobby == data.lobby;

@@ -32,3 +32,6 @@
 # Heroku
  - .env file
  - moongose / mongoDB
+
+
+# SPIELERMAXIMUM für Runde
