@@ -1,4 +1,4 @@
-# paper_game
+# paper_shuffle
 
 A digital version of a game I play with my friends.
 

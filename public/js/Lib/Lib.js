@@ -1,7 +1,7 @@
 /**
  * The socket.io client-side instance
  */
-const SOCKET = io("papershuffle-schleimfresse.firebaseapp.com");
+const SOCKET = io();
 const PLAYERLIST = document.getElementById("player-list");
 const PREROOM = document.getElementById("pre-room");
 const FORM = document.getElementById("form");

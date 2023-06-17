@@ -11,6 +11,11 @@
 	--border-color: #404040;
 	--color: #fff;
 	--shadow: 10px 10px 20px rgba(0, 0, 0, 0.5);
+	--glow-color: hsl(186 100% 69%);
+}
+a {
+	color: var(--color);
+	text-decoration: none;
 }
 html,
 body {
@@ -588,12 +593,12 @@ header #copyrights {
 #blured {
 	height: 100vh;
 	width: 100vw;
-	background-color: rgba(0,0,0, 0.5);
-    overflow: hidden;
-    z-index: 1000;
-    display: none;
-    position: absolute;
-    top: 0;
+	background-color: rgba(0, 0, 0, 0.5);
+	overflow: hidden;
+	z-index: 1000;
+	display: none;
+	position: absolute;
+	top: 0;
 }
 
 .center {
@@ -604,16 +609,15 @@ header #copyrights {
 }
 
 @media (max-width: 900px) {
-#copyrights{
-	display: none;
-}
-#game-section{
-	width: 100vw;
-}
-#game-textarea{
-	margin-left: auto;
-    margin-right: auto;
-    width: 95vw;
-}
-
+	#copyrights {
+		display: none;
+	}
+	#game-section {
+		width: 100vw;
+	}
+	#game-textarea {
+		margin-left: auto;
+		margin-right: auto;
+		width: 95vw;
+	}
 }

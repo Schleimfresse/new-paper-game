@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="msapplication-TileColor" content="#da532c" />
+		<meta name="theme-color" content="#ffffff" />
+		<link rel="apple-touch-icon" sizes="180x180" href="./img/apple-touch-icon.png" />
+		<link rel="icon" type="image/png" sizes="32x32" href="./img/favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="./img/favicon-16x16.png" />
+		<link rel="manifest" href="./manifests/site.webmanifest" />
+		<link rel="mask-icon" href="./img/safari-pinned-tab.svg" color="#5bbad5" />
+		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+		<link rel="stylesheet" href="./css/style.css" />
+		<script defer src="/socket.io/socket.io.js"></script>
+		<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.5/pdfmake.min.js"
+			integrity="sha512-rDbVu5s98lzXZsmJoMa0DjHNE+RwPJACogUCLyq3Xxm2kJO6qsQwjbE5NDk2DqmlKcxDirCnU1wAzVLe12IM3w=="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		></script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.5/vfs_fonts.js"
+			integrity="sha512-cktKDgjEiIkPVHYbn8bh/FEyYxmt4JDJJjOCu5/FQAkW4bc911XtKYValiyzBiJigjVEvrIAyQFEbRJZyDA1wQ=="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		></script>
+		<script type="text/javascript" defer src="js/Lib/Lib.js"></script>
+		<script type="text/javascript" defer src="js/chat.js"></script>
+		<script type="text/javascript" defer src="js/game.js"></script>
+		<script type="text/javascript" defer src="js/client.js"></script>
+		<title>Choose | PaperShuffle</title>
+	</head>
+	<body>
+		<header>
+			<a href="/"
+				><div id="header-title">
+					<ion-icon name="document-outline"></ion-icon><span>PaperShuffle</span>
+				</div></a
+			>
+			<div id="copyrights">Copyright (c) 2023 Schleimfresse. All rights reserved.</div>
+		</header>
+		<div id="joincreateselection">
+			<div id="openLobbys">
+				Currently open lobbys:
+				<p></p>
+			</div>
+			<h1>Choose</h1>
+			<input class="bt-small" id="Join" type="button" value="Join" />
+			<input class="bt-small" id="Create" type="button" value="Create" />
+		</div>
+		<form action="" id="form" onsubmit="return false;">
+			<div class="fail" id="fail"></div>
+			<label><h1 id="h1">Name</h1></label>
+			<input id="name" type="text" placeholder="Your name" required autocomplete="off" />
+			<input id="roomName" type="text" placeholder="Lobby name" required autocomplete="off" />
+			<input class="bt-small" type="submit" value="Join" />
+		</form>
+		<form action="" id="formCreate" onsubmit="return false;">
+			<div class="fail" id="failCreate">This lobby already exists</div>
+			<label><h1 id="h1">Name</h1></label>
+			<input id="nameCreate" type="text" placeholder="Your name" required autocomplete="off" />
+			<input class="bt-small" type="submit" value="Create" />
+		</form>
+		<div id="pre-room" style="display: none">
+			<div id="pre-room-header">
+				<div id="RoomNo"></div>
+				<div id="waitroom-box-header">
+					<h1>Players connected:</h1>
+					<div id="backToForm">
+						<ion-icon class="icon-size-medium" name="arrow-back-circle-outline"></ion-icon>
+					</div>
+				</div>
+				<ul id="player-list"></ul>
+			</div>
+			<div id="chat">
+				<div id="chatarea"></div>
+				<form id="chatform" action="" onsubmit="return false;">
+					<input id="chatTextfield" autocomplete="off" placeholder="Message ..." type="text" />
+					<input id="chatsubmit" type="submit" />
+				</form>
+			</div>
+		</div>
+		<div id="ready-wrapper">
+			<div id="ready-box">
+				<div class="information-wrapper">
+					<ion-icon class="icon-size-small icon-spacing-right" name="attach-outline"></ion-icon
+					><span>Round:&nbsp;</span><span id="round">1</span>
+				</div>
+				<div class="information-wrapper">
+					<ion-icon class="icon-size-small icon-spacing-right" name="checkmark-circle-outline"></ion-icon
+					><span id="usersReady">0</span>/<span id="allUsers"></span>
+				</div>
+				<div class="information-wrapper">
+					<ion-icon class="icon-size-small icon-spacing-right" name="hourglass-outline"></ion-icon>
+					<span>Duration:&nbsp;</span><span id="duration"></span>
+				</div>
+				<div class="information-wrapper" id="ping-box">
+					<svg
+						id="loading-spinner-svg"
+						xmlns="http://www.w3.org/2000/svg"
+						xmlns:xlink="http://www.w3.org/1999/xlink"
+						width="24px"
+						height="24px"
+						viewBox="0 0 100 100"
+						preserveAspectRatio="xMidYMid"
+						class="icon-spacing-right icon-size-small"
+					>
+						<circle
+							cx="50"
+							cy="50"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="10"
+							r="35"
+							stroke-dasharray="164.93361431346415 56.97787143782138"
+						></circle>
+					</svg>
+					<span id="ping-update">Connecting...</span>
+				</div>
+			</div>
+		</div>
+		<section id="game-section">
+			<div id="textinput-wrapper">
+				<div id="showcase"></div>
+				<textarea onkeypress="SubmitOnEnter(event);" id="game-textarea"></textarea>
+				<input type="submit" value="Submit" id="game-text-submit" />
+				<div id="submit-on-enter-wrapper">
+					<input class="icon-spacing-right" type="checkbox" value="Submit" id="submit-on-enter" /><span
+						>Submit on enter</span
+					>
+				</div>
+			</div>
+		</section>
+		<section id="end-section">
+			<div id="end-card">
+				<aside id="end-card-users"></aside>
+				<div id="end-card-content-wrapper">
+					<div id="end-card-content"></div>
+					<div id="end-card-content-footer"></div>
+				</div>
+			</div>
+			<div id="end-bt-wrapper"></div>
+		</section>
+		<section id="blured" class="center"><div></div></section>
+	</body>
+</html>
