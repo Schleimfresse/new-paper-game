@@ -12,13 +12,13 @@ const listen = server.listen(port, () => {
 });
 const Text = require("../models/content");
 const User = require("../models/users");
-const static = app.use(express.static("src/public"));
+const static = app.use(express.static(__dirname + "/../../public"));
 const connectDB = require("../config/db");
 // Init end
 // Global variables start
 /**
  * An Object which holds all rooms and in which round they are currently in
- * @returns {Object} An Object with all rooms and in which round they are currently in
+ * @returns {*} An Object with all rooms and in which round they are currently in
  * @public
  */
 let rounds = {};
