@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="msapplication-TileColor" content="#da532c" />
+		<meta name="theme-color" content="#ffffff" />
+		<link rel="apple-touch-icon" sizes="180x180" href="./../img/apple-touch-icon.png" />
+		<link rel="icon" type="image/png" sizes="32x32" href="./../img/favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="./../img/favicon-16x16.png" />
+		<link rel="manifest" href="./../manifests/site.webmanifest" />
+		<link rel="mask-icon" href="./../img/safari-pinned-tab.svg" color="#5bbad5" />
+		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+		<link rel="stylesheet" href="./../css/style.css" />
+		<link rel="stylesheet" href="./../css/buttons.css" />
+		<link rel="stylesheet" href="./../css/archive/add.css" />
+		<link rel="stylesheet" href="./../css/archive/style.css" />
+		<link rel="stylesheet" href="./../css/archive/sidebar.css" />
+		<script defer src="./../js/archive/dragable.js"></script>
+		<script defer src="./../js/archive/add.js"></script>
+		<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+		<title>PaperShuffle | Archive add</title>
+		<script>
+			const user = "<%= data.user.username %>"
+		</script>
+	</head>
+	<body>
+		<header>
+			<a href="/"
+				><div id="header-title">
+					<svg
+						version="1.0"
+						xmlns="http://www.w3.org/2000/svg"
+						width="28px"
+						height="28px"
+						viewBox="0 0 700.000000 700.000000"
+						preserveAspectRatio="xMidYMid meet"
+						class="nav-icon"
+					>
+						<g
+							transform="translate(0.000000,700.000000) scale(0.100000,-0.100000)"
+							fill="white"
+							stroke="none"
+						>
+							<path
+								d="M1967 6564 c-1 -1 -38 -4 -82 -8 -325 -25 -623 -253 -735 -565 -59
+-162 -56 -41 -55 -2515 1 -2149 2 -2285 19 -2354 73 -299 275 -528 558 -631
+78 -29 125 -40 203 -47 39 -4 783 -7 1655 -7 1759 0 1662 -4 1830 65 222 92
+409 285 490 506 58 159 56 112 55 1657 l-1 1420 -27 80 c-56 169 -15 124
+-1132 1240 -768 769 -1044 1039 -1087 1063 -73 43 -182 80 -261 88 -49 6
+-1424 13 -1430 8z m1313 -443 c3 0 5 -369 5 -819 l0 -817 24 -75 c37 -118 78
+-187 166 -276 63 -63 98 -90 165 -123 152 -74 135 -73 1033 -74 l797 0 0
+-1336 c0 -857 -4 -1352 -11 -1380 -37 -162 -186 -310 -339 -337 -77 -13 -3172
+-11 -3239 2 -160 33 -289 154 -332 312 -18 63 -19 164 -19 2292 0 1456 3 2245
+10 2280 33 176 185 323 359 349 35 5 1361 7 1381 2z m1870 -1741 c0 -3 -285
+-5 -632 -5 -627 1 -633 1 -674 22 -54 28 -101 83 -114 133 -9 32 -14 710 -10
+1250 0 34 26 9 715 -680 393 -393 715 -717 715 -720z"
+							/>
+						</g>
+					</svg><span>PaperShuffle</span>
+				</div></a
+			>
+		</header>
+		<main>
+			<div id="responsebox">
+				<h3></h3>
+				<div></div>
+			</div>
+			<aside id="side-panel">
+				<ul class="navbar-nav">
+					<li class="nav-item mt-3"><h6 class="nav-heading">Import/Export</h6></li>
+					<li class="nav-item">
+						<div class="nav-link" id="uploadCSV">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								height="28"
+								viewBox="0 -960 960 960"
+								width="28"
+								class="nav-icon"
+							>
+								<path
+									fill="white"
+									d="M452-202h60v-201l82 82 42-42-156-152-154 154 42 42 84-84v201ZM220-80q-24 0-42-18t-18-42v-680q0-24 18-42t42-18h361l219 219v521q0 24-18 42t-42 18H220Zm331-554v-186H220v680h520v-494H551ZM220-820v186-186 680-680Z"
+								/>
+							</svg>
+							<span>Import from CSV</span>
+						</div>
+					</li>
+					<li class="nav-item">
+						<div class="nav-link" id="downloadTXT">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								height="28"
+								viewBox="0 -960 960 960"
+								width="28"
+								class="nav-icon"
+							>
+								<path
+									fill="white"
+									d="M220-160q-24 0-42-18t-18-42v-143h60v143h520v-143h60v143q0 24-18 42t-42 18H220Zm260-153L287-506l43-43 120 120v-371h60v371l120-120 43 43-193 193Z"
+								/>
+							</svg>
+							<span>Export as TXT</span>
+						</div>
+					</li>
+					<li class="nav-item">
+						<div class="nav-link" id="downloadCSV">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								height="28"
+								viewBox="0 -960 960 960"
+								width="28"
+								class="nav-icon"
+							>
+								<path
+									fill="white"
+									d="M220-160q-24 0-42-18t-18-42v-143h60v143h520v-143h60v143q0 24-18 42t-42 18H220Zm260-153L287-506l43-43 120 120v-371h60v371l120-120 43 43-193 193Z"
+								/>
+							</svg>
+							<span>Export as CSV</span>
+						</div>
+					</li>
+					<li class="nav-item mt-3"><h6 class="nav-heading">Editor Controls</h6></li>
+					<li class="nav-item">
+						<div class="nav-link" id="addnewsection">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								height="28"
+								viewBox="0 -960 960 960"
+								width="28"
+								class="nav-icon"
+							>
+								<path fill="white" d="M450-200v-250H200v-60h250v-250h60v250h250v60H510v250h-60Z" />
+							</svg>
+							<span>Add element</span>
+						</div>
+					</li>
+					<li class="nav-item">
+						<div class="nav-link" id="deleteelement">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								height="28"
+								viewBox="0 -960 960 960"
+								width="28"
+								class="nav-icon"
+							>
+								<path
+									fill="white"
+									d="M261-120q-24.75 0-42.375-17.625T201-180v-570h-41v-60h188v-30h264v30h188v60h-41v570q0 24-18 42t-42 18H261Zm438-630H261v570h438v-570ZM367-266h60v-399h-60v399Zm166 0h60v-399h-60v399ZM261-750v570-570Z"
+								/>
+							</svg>
+							<span>Delete element</span>
+						</div>
+					</li>
+					<li class="nav-item mt-3"><h6 class="nav-heading">Manage</h6></li>
+					<li class="nav-item">
+						<div class="nav-link">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								height="28"
+								viewBox="0 -960 960 960"
+								width="28"
+								class="nav-icon"
+							>
+								<path
+									fill="white"
+									d="m250-160 43-170H140l15-60h153l45-180H180l15-60h173l42-170h59l-42 170h181l42-170h59l-42 170h153l-15 60H652l-45 180h173l-15 60H592l-42 170h-60l43-170H352l-42 170h-60Zm117-230h181l45-180H412l-45 180Z"
+								/>
+							</svg>
+							<span>Tags</span>
+						</div>
+					</li>
+					<li class="nav-item">
+						<div class="nav-link" id="savecontent">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								height="28"
+								viewBox="0 -960 960 960"
+								width="28"
+								class="nav-icon"
+							>
+								<path
+									fill="white"
+									d="M840-683v503q0 24-18 42t-42 18H180q-24 0-42-18t-18-42v-600q0-24 18-42t42-18h503l157 157Zm-60 27L656-780H180v600h600v-476ZM479.765-245Q523-245 553.5-275.265q30.5-30.264 30.5-73.5Q584-392 553.735-422.5q-30.264-30.5-73.5-30.5Q437-453 406.5-422.735q-30.5 30.264-30.5 73.5Q376-306 406.265-275.5q30.264 30.5 73.5 30.5ZM233-584h358v-143H233v143Zm-53-72v476-600 124Z"
+								/>
+							</svg>
+							<span>Save</span>
+						</div>
+					</li>
+					<div id="bottom-section">
+						<li class="nav-item mt-3"><h6 class="nav-heading">Account</h6></li>
+					<li class="nav-item">
+						<div class="nav-link">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								height="28"
+								viewBox="0 -960 960 960"
+								width="28"
+								class="nav-icon"
+							>
+								<path
+									fill="white"
+									d="M180-217q60-56 135.896-90.5 75.897-34.5 164-34.5Q568-342 644-307.5 720-273 780-217v-563H180v563Zm302-204q58 0 98-40t40-98q0-58-40-98t-98-40q-58 0-98 40t-40 98q0 58 40 98t98 40ZM180-120q-24 0-42-18t-18-42v-600q0-24 18-42t42-18h600q24 0 42 18t18 42v600q0 24-18 42t-42 18H180Zm55-60h490v-9q-54-46-116-69.5T480-282q-67 0-129 23.5T235-189v9Zm247-301q-32.5 0-55.25-22.75T404-559q0-32.5 22.75-55.25T482-637q32.5 0 55.25 22.75T560-559q0 32.5-22.75 55.25T482-481Zm-2-18Z"
+								/>
+							</svg>
+							<span><%= data.user.display_text %></span>
+						</div>
+					</li>
+					</div>
+				</ul>
+				
+			</aside>
+			<div id="main-container">
+				<form action="/add" method="post" id="thread_form">
+					<div id="element-section">
+						<div class="InputElement-wrapper">
+							<input required placeholder="Enter title" name="title" id="title" type="text" />
+						</div>
+						<input type="submit" name="" id="saveinput" hidden />
+					</div>
+				</form>
+			</div>
+		</main>
+	</body>
+	<template>
+		<div class="InputElement-wrapper">
+			<input required placeholder="New text element" name="title" type="text" class="content-input" />
+			<select name="" class="Inputauthor">
+				<option value="undefined">Unknown</option>
+				<option value="Nina">Nina</option>
+				<option value="Nele">Nele</option>
+				<option value="Paul">Paul</option>
+				<option value="Linus">Linus</option>
+				<option value="Oliver">Oliver</option>
+				<option value="Mika">Mika</option>
+			</select>
+			<div class="selectInputWrapper"><input type="checkbox" name="" class="selectInputElement" /></div>
+		</div>
+	</template>
+	<input type="file" name="" id="uploadinput" hidden accept=".csv" />
+</html>

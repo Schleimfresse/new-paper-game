@@ -1,0 +1,134 @@
+* {
+	--standart_gray: #171717;
+	--second-theme-color: #0155FB;
+}
+
+a {
+	color: #003DB6;
+}
+
+#rounded_home_btn {
+	border-radius: 50px;
+	padding-left: 30px;
+	padding-right: 30px;
+	font-size: 1.5em;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 2em;
+	cursor: pointer;
+	border: 1px solid #fff;
+	color: #fff;
+	background-color: var(--standart_gray);
+	transition: 500ms;
+}
+
+#rounded_home_btn:hover {
+	background-color: #fff;
+	color: var(--standart_gray);
+	transition: 500ms;
+	border: 1px solid #fff;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+input[type="number"] {
+	-moz-appearance: textfield;
+}
+
+#std_num {
+	width: 200px;
+	appearance: none;
+	height: 60px;
+	font-size: 20px;
+	background-color: transparent;
+	outline: none;
+	border: 2px solid #fff;
+}
+
+.box {
+	width: 500px;
+	padding: 30px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background: rgba(0, 0, 0, 0.4);
+	text-align: center;
+}
+.box h1 {
+	color: white;
+	text-transform: capitalize;
+	font-weight: 700;
+}
+
+.box input[type="text"],
+.box input[type="password"],
+.box input[type="email"] {
+	border: 0px;
+	background: none;
+	display: block;
+	margin: 20px auto;
+	text-align: center;
+	border: 2px solid var(--second-theme-color);
+	padding: 14px 10px;
+	width: 220px;
+	outline: none;
+	color: white;
+	border-radius: 24px;
+	transition: 0.25px;
+}
+
+.std_btn {
+	background: none;
+	border: 2px solid #fff;
+	font: inherit;
+	line-height: 1;
+	padding: 0.5em 1em 0.5em 1em;
+	cursor: pointer;
+	color: white;
+	outline: none;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 8px 8px 8px 0;
+}
+
+.box input[type="submit"] {
+	border: 2px solid var(--second-theme-color);
+	background: none;
+	display: block;
+	margin: 20px auto;
+	text-align: center;
+	padding: 14px 10px;
+	width: 220px;
+	outline: none;
+	color: white;
+	border-radius: 24px;
+	cursor: pointer;
+}
+
+.box input[type="submit"]:hover {
+	background: var(--second-theme-color);
+}
+
+.box input[type="text"]:focus,
+.box input[type="email"]:focus,
+.box input[type="password"]:focus {
+	width: 270px;
+	color: var(--second-theme-color);
+	border-color: var(--second-theme-color);
+}
+
+
+.center {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	flex-direction: column;
+}

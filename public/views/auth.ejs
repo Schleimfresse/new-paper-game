@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title><%- heading %> | PaperShuffle</title>
+        <link rel="stylesheet" href="../css/style.css" />
+		<link rel="stylesheet" href="../css/index.css" />
+		<link rel="stylesheet" href="../css/auth.css" />
+		<script>
+			window.addEventListener("keydown", (e) => {
+				if (e.keyCode === 13) {
+					window.location.href = "/";
+				}
+			});
+		</script>
+	</head>
+	<body class="center">
+		<main class="center">
+			<h1><%- heading %></h1>
+			<p><%- desc %></p>
+			<button onclick="window.location.href = '/<%- link %>'" class="glas-btn"><%- type %></button>
+		</main>
+	</body>
+</html>

@@ -1,16 +1,104 @@
 // Initial - start -
-const Lib = require("./src/Lib/Lib.js");
-Lib.static;
-Lib.bodyparsing;
-Lib.listen;
-Lib.connectDB();
-// initial - end -
-Lib.app.get("/", (req, res) => {
-	res.status(200).sendFile(__dirname + "/public/index.html");
+const __dirname = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
+global.__dirname = __dirname;
+import * as path from "path";
+import { fileURLToPath } from "url";
+import Lib from "./src/Lib/Lib.mjs";
+import UserAuth from "./src/UserAuth/index.mjs";
+import cookieSession from "cookie-session";
+import Datastore from "nedb";
+const database = new Datastore("database.db");
+Lib.app.use(
+	cookieSession({
+		name: "PaperShuffle-session",
+		keys: ["key1", "key2"],
+		secret: process.env.key,
+		httpOnly: true,
+	})
+);
+
+database.loadDatabase();
+Lib.app.use(Lib.express.static(__dirname + "/public"));
+Lib.app.use("/auth", UserAuth.authRoutes);
+Lib.app.set("view engine", "ejs");
+Lib.app.set("views", path.join(__dirname, "public/views/"));
+Lib.app.use(function (req, res, next) {
+	res.header("Access-Control-Allow-Headers", "x-access-token, Origin, Content-Type, Accept");
+	next();
 });
 
-Lib.app.get("/a", (req, res) => {
-	res.status(200).sendFile(__dirname + "/public/archive.html");
+// initial - end -
+Lib.app.get(
+	"/",
+	[UserAuth.middleware.authJwt.verifyTokenSoft, UserAuth.middleware.authJwt.setUser],
+	(req, res) => {
+		res.status(200).render(__dirname + "/public/views/index.ejs", {
+			data: { user: req.user },
+		});
+	}
+);
+
+Lib.app.get(
+	"/archive",
+	[UserAuth.middleware.authJwt.verifyToken, UserAuth.middleware.authJwt.setUser],
+	(req, res) => {
+		res.status(200).render(__dirname + "/public/views/archive.ejs", {
+			data: { user: req.user },
+		});
+	}
+);
+
+Lib.app.get(
+	"/archive/add",
+	[UserAuth.middleware.authJwt.verifyToken, UserAuth.middleware.authJwt.setUser],
+	(req, res) => {
+		res.status(200).render(__dirname + "/public/views/add.ejs", {
+			data: { user: req.user },
+		});
+	}
+);
+
+Lib.app.get("/api/:id", (req, res) => {
+	database.find({ _id: req.params.id }, (err, data) => {
+		if (err) {
+			res.end();
+			return;
+		}
+		res.json(data);
+	});
+});
+
+Lib.app.get(
+	"/archive/:id",
+	[UserAuth.middleware.authJwt.verifyToken, UserAuth.middleware.authJwt.setUser],
+	(req, res) => {
+		res.status(200).render(__dirname + "/public/views/page.ejs", {
+			data: { user: req.user },
+		});
+	}
+);
+
+Lib.app.post("/add", (req, res) => {
+	console.log("ADDED: ", req.body);
+	database.insert(req.body, (err) => {});
+	res.json({ title: "Success", desc: "Successfully added page!", status: 200 });
+});
+
+Lib.app.get("/api", (req, res) => {
+	const page = parseInt(req.query.page) || 1;
+	const resultsPerPage = 8;
+	const startIndex = (page - 1) * resultsPerPage;
+	const endIndex = startIndex + resultsPerPage;
+	database.find({}, (err, data) => {
+		if (err) {
+			res.end('<h1>500 Internal Server Error</h1>')
+			return
+		}
+		const totalPages = Math.ceil(data.length / resultsPerPage);
+		const results = data.slice(startIndex, endIndex);
+		console.log(totalPages);
+		res.json({ results: results, total: totalPages });
+	});
 });
 
 Lib.app.get("/app", (req, res) => {

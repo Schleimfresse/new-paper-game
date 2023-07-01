@@ -1,0 +1,41 @@
+.icon_button {
+	display: flex;
+	height: 50px;
+	padding: 0;
+	background-color: rgba(78, 78, 78, 0.2);
+	backdrop-filter: blur(40px);
+	border: none;
+	outline: none;
+	border-radius: 10px;
+	overflow: hidden;
+	font-family: "Quicksand", sans-serif;
+	font-size: 16px;
+	font-weight: 500;
+	cursor: pointer;
+	align-items: center;
+	justify-content: center;
+}
+
+.icon_button:hover {
+	background-color: rgba(201, 201, 201, 0.2);
+}
+
+.icon_button:active {
+	background-color: rgba(255, 255, 255, 0.2);
+}
+
+.icon_button span {
+	display: inline-flex;
+	align-items: center;
+	padding: 0 5px;
+	color: #fff;
+	height: 100%;
+}
+.icon-btn-text {
+	padding: 0 20px !important;
+}
+
+.round_button {
+	border-radius: 50px;
+	padding: 0 10px;
+}

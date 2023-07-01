@@ -19,8 +19,36 @@
 	</head>
 	<body>
 		<header>
-			<div id="header-title"><ion-icon name="document-outline"></ion-icon><span>PaperShuffle</span></div>
-			<div id="copyrights">Copyright (c) 2023 Schleimfresse. All rights reserved.</div>
+			<div id="header-title"><svg
+						version="1.0"
+						xmlns="http://www.w3.org/2000/svg"
+						width="28px"
+						height="28px"
+						viewBox="0 0 700.000000 700.000000"
+						preserveAspectRatio="xMidYMid meet"
+						class="nav-icon"
+					>
+						<g
+							fill="white"
+							stroke="none"
+						>
+							<path
+								d="M1967 6564 c-1 -1 -38 -4 -82 -8 -325 -25 -623 -253 -735 -565 -59
+-162 -56 -41 -55 -2515 1 -2149 2 -2285 19 -2354 73 -299 275 -528 558 -631
+78 -29 125 -40 203 -47 39 -4 783 -7 1655 -7 1759 0 1662 -4 1830 65 222 92
+409 285 490 506 58 159 56 112 55 1657 l-1 1420 -27 80 c-56 169 -15 124
+-1132 1240 -768 769 -1044 1039 -1087 1063 -73 43 -182 80 -261 88 -49 6
+-1424 13 -1430 8z m1313 -443 c3 0 5 -369 5 -819 l0 -817 24 -75 c37 -118 78
+-187 166 -276 63 -63 98 -90 165 -123 152 -74 135 -73 1033 -74 l797 0 0
+-1336 c0 -857 -4 -1352 -11 -1380 -37 -162 -186 -310 -339 -337 -77 -13 -3172
+-11 -3239 2 -160 33 -289 154 -332 312 -18 63 -19 164 -19 2292 0 1456 3 2245
+10 2280 33 176 185 323 359 349 35 5 1361 7 1381 2z m1870 -1741 c0 -3 -285
+-5 -632 -5 -627 1 -633 1 -674 22 -54 28 -101 83 -114 133 -9 32 -14 710 -10
+1250 0 34 26 9 715 -680 393 -393 715 -717 715 -720z"
+							/>
+						</g>
+					</svg><span>PaperShuffle</span></div>
+			<div><%= data.user.display_text %></div>
 		</header>
 		<main>
 			<section class="main-sub-container">
@@ -29,7 +57,7 @@
 					<h2>PaperShuffle Archive</h2>
 				</div>
 				<div class="">
-					<a href="/a"><button class="glas-btn">Archive</button></a>
+					<a href="/archive"><button class="glas-btn">Archive</button></a>
 				</div>
 			</section>
 			<section class="main-sub-container">

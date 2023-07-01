@@ -1,0 +1,107 @@
+main {
+	width: 100%;
+	height: 100%;
+	display: flex;
+}
+#main-container {
+	flex-grow: 1;
+	top: 10%;
+	position: relative;
+	display: flex;
+	justify-content: center;
+}
+
+#addnew-section {
+	margin: 50px 0 50px 0;
+	height: 50px;
+	display: flex;
+	justify-content: flex-end;
+}
+
+#thread_form {
+	width: 90%;
+	overflow-y: auto;
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}
+
+#thread_form::-webkit-scrollbar {
+	display: none;
+}
+
+.InputElement-wrapper {
+	height: 50px;
+	width: 100%;
+	outline: none;
+	overflow: hidden;
+	background-color: rgba(78, 78, 78, 0.2);
+	backdrop-filter: blur(40px);
+	border: none;
+	border-radius: 5px;
+	display: flex;
+	margin: 0 0 20px 0;
+}
+.InputElement-wrapper select {
+	outline: none;
+	background-color: transparent;
+	appearance: none;
+	color: #fff;
+	border: none;
+	width: 100px;
+	text-align: center;
+}
+.InputElement-wrapper select option {
+	background-color: var(--header);
+}
+.InputElement-wrapper input[type="text"] {
+	overflow: hidden;
+	padding-inline: 20px 20px;
+	border: none;
+	outline: none;
+	background-color: transparent;
+	font-size: 2em;
+	color: var(--color);
+	padding-inline: 10px;
+	flex-grow: 1;
+}
+
+.delete-element {
+	height: inherit;
+	width: 50px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+}
+
+#tag_section {
+}
+
+.selectInputElement {
+	height: 50%;
+	width: 50%;
+	appearance: none;
+	position: relative;
+	border: 2px solid var(--color);
+}
+.selectInputElement:checked:after {
+	content: "X";
+	font-weight: 500;
+	font-size: 20px;
+	color: var(--color);
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	-webkit-transform: translate(-50%, -50%);
+	-moz-transform: translate(-50%, -50%);
+	-ms-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
+}
+.selectInputWrapper {
+	width: 50px;
+	height: 100%;
+	display: none;
+	align-items: center;
+	justify-content: center;
+}
+

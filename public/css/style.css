@@ -5,7 +5,7 @@
 	transition: 250ms;
 	overflow: hidden;
 	--standart_gray: #171717;
-	--header: #171717;
+	--header: #161819;
 	--listitem-bg: rgba(0, 0, 0, 0.2);
 	--darker_gray: #6e6e6e;
 	--border-color: #404040;
@@ -313,17 +313,12 @@ body {
 }
 header {
 	font-size: 1.5em;
-	border-bottom: 1px solid rgb(167 35 58);
 	display: flex;
-	background: rgb(167, 35, 58);
-	background: linear-gradient(90deg, rgba(167, 35, 58, 1) 0%, rgba(0, 18, 32, 1) 74%);
+	background: var(--header);
 	align-items: center;
 	justify-content: space-between;
 	padding: 0.2em 0 0.2em 0;
 	padding-inline: 1em;
-}
-header #copyrights {
-	color: rgb(167 35 58);
 }
 #header-title {
 	display: flex;
@@ -609,9 +604,6 @@ header #copyrights {
 }
 
 @media (max-width: 900px) {
-	#copyrights {
-		display: none;
-	}
 	#game-section {
 		width: 100vw;
 	}
