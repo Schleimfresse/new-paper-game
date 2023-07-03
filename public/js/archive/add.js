@@ -10,7 +10,7 @@ const deleteElement = document.getElementById("deleteelement");
 const title = document.getElementById("title");
 const doownloadTXT = document.getElementById("downloadTXT");
 const doownloadCSV = document.getElementById("downloadCSV");
-
+let tags;
 save_content.addEventListener("click", () => {
 	SaveInput.click();
 });
@@ -74,16 +74,20 @@ form.addEventListener("submit", (e) => {
 		method: "POST",
 	})
 		.then((res) => res.json())
-		.then((data) => showResponse(data));
+		.then((data) => showResponse(data, true));
 });
 
-const showResponse = (data) => {
+const showResponse = (data, type) => {
 	response_box.setAttribute("data-visibility", true);
 	response_box.children[0].textContent = data.title;
 	response_box.children[1].textContent = data.desc;
 	if (data.status === 200) {
 		setTimeout(() => {
-			window.location.href = "/archive";
+			if (type) {
+				window.location.href = "/archive";
+			} else {
+				response_box.removeAttribute("data-visibility");
+			}
 		}, 2000);
 	}
 };
@@ -150,6 +154,7 @@ const generateTextContent = () => {
 	for (e of contentInput) {
 		array = [...array, e.value];
 	}
+	if ((array = [])) return;
 	console.log(array);
 	return array;
 };
@@ -161,3 +166,54 @@ const downloadFile = (blob, ext) => {
 	link.click();
 	URL.revokeObjectURL(link.href);
 };
+
+const tags_element = document.getElementById("tags");
+
+document.getElementById("openTags").addEventListener("click", () => {
+	if (tags_element.getAttribute("data-open") == "true") {
+		expandedSidebar.style.display = "none";
+		tags_element.removeAttribute("data-open");
+		return;
+	}
+	expandedSidebar.style.display = "flex";
+	tags_element.style.display = "block";
+	tags_element.setAttribute("data-open", true);
+});
+
+const getTags = async () => {
+	const url = "/api/tags";
+	const response = await fetch(url);
+	tags = await response.json();
+	displayTags(tags);
+};
+
+const displayTags = (data) => {
+	console.log(data);
+	for (item of data) {
+		const temp = document.getElementsByTagName("template")[1];
+		let e = temp.content.cloneNode(true).children[0];
+		e.children[0].style.backgroundColor = item.color;
+		e.children[1].textContent = item.title;
+		document.getElementById("option-ul").append(e);
+	}
+};
+
+document.getElementById("createnewtag").addEventListener("click", () => {
+	const color = document.getElementById("tag_color");
+	const name = document.getElementById("tag_name");
+	if (name.value == "") return;
+	const body = JSON.stringify({ color: color.value, title: name.value });
+	color.value = "";
+	name.value = "";
+	fetch("/api/tags/add", {
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: body,
+		method: "POST",
+	})
+		.then((res) => res.json())
+		.then((data) => showResponse(data, false));
+});
+
+getTags();

@@ -106,3 +106,4 @@ dist
 # custom
 database.db
 user.db
+tags.db

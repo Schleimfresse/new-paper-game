@@ -7,6 +7,7 @@ import Lib from "./src/Lib/Lib.mjs";
 import UserAuth from "./src/UserAuth/index.mjs";
 import cookieSession from "cookie-session";
 import Datastore from "nedb";
+const tag_database = new Datastore("tags.db");
 const database = new Datastore("database.db");
 Lib.app.use(
 	cookieSession({
@@ -16,7 +17,7 @@ Lib.app.use(
 		httpOnly: true,
 	})
 );
-
+tag_database.loadDatabase();
 database.loadDatabase();
 Lib.app.use(Lib.express.static(__dirname + "/public"));
 Lib.app.use("/auth", UserAuth.authRoutes);
@@ -91,13 +92,41 @@ Lib.app.get("/api", (req, res) => {
 	const endIndex = startIndex + resultsPerPage;
 	database.find({}, (err, data) => {
 		if (err) {
-			res.end('<h1>500 Internal Server Error</h1>')
-			return
+			res.end("<h1>500 Internal Server Error</h1>");
+			return;
 		}
 		const totalPages = Math.ceil(data.length / resultsPerPage);
 		const results = data.slice(startIndex, endIndex);
 		console.log(totalPages);
 		res.json({ results: results, total: totalPages });
+	});
+});
+
+Lib.app.post("/api/tags/add", (req, res) => {
+	tag_database.find({title: req.body.title}, (err, data) => {
+		console.log(data.length);
+		if (data.length !== 0) {
+			res.json({ title: "Conflict", desc: "Tag already exists!", status: 409 });
+			return;
+		}
+		tag_database.insert(req.body, (err) => {
+			if (err) {
+				res.json({ title: "Error", desc: "500 Internal Server Error", status: 500 });
+				return;
+			}
+			res.json({ title: "Success", desc: "Successfully added tag!", status: 200 });
+		});
+	})
+});
+
+Lib.app.get("/api/tags", (req, res) => {
+	tag_database.find({}, (err, data) => {
+		if (err) {
+			res.end("<h1>500 Internal Server Error</h1>");
+			return;
+		}
+		console.log('TAGS' + data);
+		res.json(data);
 	});
 });
 

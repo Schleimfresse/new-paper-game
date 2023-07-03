@@ -17,7 +17,7 @@
 		<link rel="stylesheet" href="./css/buttons.css" />
 		<link rel="stylesheet" href="./../css/archive/sidebar.css" />
 		<script defer src="./js/archive/fetchPages.js"></script>
-		<script defer src="./js/archive/card_hover.js"></script>
+		<script defer src="./js/archive/tag_selector.js"></script>
 		<title>PaperShuffle | Archive</title>
 	</head>
 	<body>
@@ -79,7 +79,7 @@
 					</li>
 					<li class="nav-item mt-3"><h6 class="nav-heading">Filter & Search options</h6></li>
 					<li class="nav-item">
-						<div class="nav-link" id="addnewsection">
+						<div class="nav-link" id="openFilter">
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								height="28"
@@ -96,7 +96,7 @@
 						</div>
 					</li>
 					<li class="nav-item">
-						<div class="nav-link" id="deleteelement">
+						<div class="nav-link" id="openSearch">
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								height="28"
@@ -127,8 +127,8 @@
 										<path fill="white" d="m375-240-43-43 198-198-198-198 43-43 241 241-241 241Z" />
 									</svg>
 								</button>
-								<input type="number" name="" id="gotopage" title="Goto page" value=""/>
-								<button  class="page_nav_btn" title="Goto" id="gotopagesubmit" type="button">
+								<input type="number" name="" id="gotopage" title="Goto page" value="" />
+								<button class="page_nav_btn" title="Goto" id="gotopagesubmit" type="button">
 									<svg xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 -960 960 960" width="48">
 										<path
 											fill="white"
@@ -175,6 +175,40 @@
 						</li>
 					</div>
 				</ul>
+				<div id="expandedSidebar">
+					<div class="nav-item" id="filter">
+						<div class="tag_wrapper">
+							<div class="select-btn">
+								<span class="sBtn-text">Select tag</span>
+							</div>
+							<ul class="options">
+								<li class="option"><span class="color-box"></span><span class="option-text">Github</span></li>
+								<li class="option"><span class="color-box"></span><span class="option-text">Github</span></li>
+								<li class="option"><span class="color-box"></span><span class="option-text">Github</span></li>
+							</ul>
+							<div class="nav-link expanded-nav-btn">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									height="32"
+									viewBox="0 -960 960 960"
+									width="32"
+									class="nav-icon"
+								>
+								<path
+								fill="white"
+								d="M440-160q-17 0-28.5-11.5T400-200v-240L161-745q-14-17-4-36t31-19h584q21 0 31 19t-4 36L560-440v240q0 17-11.5 28.5T520-160h-80Zm40-276 240-304H240l240 304Zm0 0Z"
+							/>
+								</svg>
+								<span>Filter</span>
+							</div>
+						</div>
+					</div>
+					<div class="nav-item" id="search">
+						<form action="/search" method="get">
+							<input type="text" name="" />
+						</form>
+					</div>
+				</div>
 			</aside>
 			<div id="main-content-wrapper"><div id="main-content"></div></div>
 		</main>
@@ -196,5 +230,8 @@
 			<span class="card-text"></span>
 			<span class="card-tags"></span>
 		</a>
+	</template>
+	<template>
+		<li class="option"><span class="color-box"></span><span class="option-text">Github</span></li>
 	</template>
 </html>

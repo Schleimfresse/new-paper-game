@@ -9,9 +9,8 @@ const checkDuplicateUsername = (req, res, next) => {
 				res.status(500).send({ message: err });
 				return;
 			}
-			console.log("trigger 1", req.body.username, user);
+
 			if (user) {
-				console.log("trigger 2");
 				res.status(400).send({ message: "Failed! Username is already in use!" });
 				return;
 			}

@@ -7,8 +7,7 @@ let data;
 
 const gotoPage = () => {
 	let input = gotopageinput.value;
-	console.log();
-	if (typeof input != "number" && input == 0) return;
+	if ((typeof input != "number" && input == 0) || input > data.total) return;
 	currentPage = input;
 	gotopageinput.value = "";
 	changeURL(currentPage);
@@ -59,6 +58,40 @@ document.getElementById("first-page-btn").addEventListener("click", function () 
 	fetchPages();
 });
 
+const filter = document.getElementById("filter");
+const search = document.getElementById("search");
+const expandedSidebar = document.getElementById("expandedSidebar");
+
+document.getElementById("openFilter").addEventListener("click", () => {
+	if (search.getAttribute("data-open") == "true") {
+		search.style.display = "none";
+		search.removeAttribute("data-open");
+	}
+	if (filter.getAttribute("data-open") == "true") {
+		expandedSidebar.style.display = "none";
+		filter.removeAttribute("data-open");
+		return;
+	}
+	expandedSidebar.style.display = "flex";
+	filter.style.display = "block";
+	filter.setAttribute("data-open", true);
+});
+
+document.getElementById("openSearch").addEventListener("click", () => {
+	if (filter.getAttribute("data-open") == "true") {
+		filter.style.display = "none";
+		filter.removeAttribute("data-open");
+	}
+	if (search.getAttribute("data-open") == "true") {
+		expandedSidebar.style.display = "none";
+		search.removeAttribute("data-open");
+		return;
+	}
+	expandedSidebar.style.display = "flex";
+	search.style.display = "block";
+	search.setAttribute("data-open", true);
+});
+
 const fetchPages = async () => {
 	const url = "/api?page=" + currentPage;
 	const response = await fetch(url);
@@ -95,8 +128,14 @@ const changeURL = (page) => {
 	window.history.pushState({ path: updatedUrl }, "", updatedUrl);
 };
 
-if (new URLSearchParams(window.location.search).get("page") == null) {
+if (currentPage == null || isNaN(currentPage)) {
 	currentPage = 1;
 }
-changeURL(currentPage);
-fetchPages().then(() => (document.getElementById("totalPages").textContent = data.total));
+
+fetchPages().then(() => {
+	document.getElementById("totalPages").textContent = data.total;
+	if (currentPage > data.total) {
+		currentPage = data.total;
+	}
+	changeURL(currentPage);
+});

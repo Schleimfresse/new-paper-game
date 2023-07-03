@@ -31,7 +31,7 @@
 	align-items: center;
 	width: 90%;
 	height: 80%;
-	box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.5);;
+	box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.5);
 }
 
 .page_item:hover {
@@ -44,16 +44,16 @@
 }
 
 .card-text {
-    font-size: 1.4rem;
-    line-height: 2rem;
-    overflow: hidden;
-    display: block;
-    max-height: 4.4rem;
-    -webkit-line-clamp: 2;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    text-overflow: ellipsis;
-    white-space: normal;
+	font-size: 1.4rem;
+	line-height: 2rem;
+	overflow: hidden;
+	display: block;
+	max-height: 4.4rem;
+	-webkit-line-clamp: 2;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	text-overflow: ellipsis;
+	white-space: normal;
 }
 
 .card-tags {
@@ -86,4 +86,54 @@ main {
 	justify-content: center;
 	align-items: center;
 	flex-grow: 1;
+}
+
+.tag {
+	font-size: 12px;
+	font-weight: 500;
+	background: var(--header);
+	border-radius: 4px;
+	height: 30px;
+	margin: 0 4px 4px 0;
+	padding: 4px;
+	display: flex;
+	align-items: center;
+}
+
+.tag-color-inner {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+	-webkit-box-pack: center;
+	-ms-flex-pack: center;
+	justify-content: center;
+	border-radius: 50%;
+	width: 16px;
+	height: 16px;
+	padding: 0;
+	margin: 0 4px;
+	-ms-flex-negative: 0;
+	flex-shrink: 0;
+	forced-color-adjust: none;
+	background-color: chocolate;
+}
+
+.tag-text-outer {
+	max-width: 200px;
+	margin-right: 4px;
+}
+
+.tag-text-inner {
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	font-weight: 500;
+	font-size: 16px;
+}
+
+#selectedTags {
+	display: flex;
+	flex-shrink: 0;
 }

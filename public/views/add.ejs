@@ -19,10 +19,11 @@
 		<link rel="stylesheet" href="./../css/archive/sidebar.css" />
 		<script defer src="./../js/archive/dragable.js"></script>
 		<script defer src="./../js/archive/add.js"></script>
+		<script defer src="./../js/archive/tag_selector.js"></script>
 		<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
 		<title>PaperShuffle | Archive add</title>
 		<script>
-			const user = "<%= data.user.username %>"
+			const user = "<%= data.user.username %>";
 		</script>
 	</head>
 	<body>
@@ -58,7 +59,8 @@
 1250 0 34 26 9 715 -680 393 -393 715 -717 715 -720z"
 							/>
 						</g>
-					</svg><span>PaperShuffle</span>
+					</svg>
+					<span>PaperShuffle</span>
 				</div></a
 			>
 		</header>
@@ -155,7 +157,7 @@
 					</li>
 					<li class="nav-item mt-3"><h6 class="nav-heading">Manage</h6></li>
 					<li class="nav-item">
-						<div class="nav-link">
+						<div class="nav-link" id="openTags">
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								height="28"
@@ -190,26 +192,79 @@
 					</li>
 					<div id="bottom-section">
 						<li class="nav-item mt-3"><h6 class="nav-heading">Account</h6></li>
-					<li class="nav-item">
-						<div class="nav-link">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								height="28"
-								viewBox="0 -960 960 960"
-								width="28"
-								class="nav-icon"
-							>
-								<path
-									fill="white"
-									d="M180-217q60-56 135.896-90.5 75.897-34.5 164-34.5Q568-342 644-307.5 720-273 780-217v-563H180v563Zm302-204q58 0 98-40t40-98q0-58-40-98t-98-40q-58 0-98 40t-40 98q0 58 40 98t98 40ZM180-120q-24 0-42-18t-18-42v-600q0-24 18-42t42-18h600q24 0 42 18t18 42v600q0 24-18 42t-42 18H180Zm55-60h490v-9q-54-46-116-69.5T480-282q-67 0-129 23.5T235-189v9Zm247-301q-32.5 0-55.25-22.75T404-559q0-32.5 22.75-55.25T482-637q32.5 0 55.25 22.75T560-559q0 32.5-22.75 55.25T482-481Zm-2-18Z"
-								/>
-							</svg>
-							<span><%= data.user.display_text %></span>
-						</div>
-					</li>
+						<li class="nav-item">
+							<div class="nav-link">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									height="28"
+									viewBox="0 -960 960 960"
+									width="28"
+									class="nav-icon"
+								>
+									<path
+										fill="white"
+										d="M180-217q60-56 135.896-90.5 75.897-34.5 164-34.5Q568-342 644-307.5 720-273 780-217v-563H180v563Zm302-204q58 0 98-40t40-98q0-58-40-98t-98-40q-58 0-98 40t-40 98q0 58 40 98t98 40ZM180-120q-24 0-42-18t-18-42v-600q0-24 18-42t42-18h600q24 0 42 18t18 42v600q0 24-18 42t-42 18H180Zm55-60h490v-9q-54-46-116-69.5T480-282q-67 0-129 23.5T235-189v9Zm247-301q-32.5 0-55.25-22.75T404-559q0-32.5 22.75-55.25T482-637q32.5 0 55.25 22.75T560-559q0 32.5-22.75 55.25T482-481Zm-2-18Z"
+									/>
+								</svg>
+								<span><%= data.user.display_text %></span>
+							</div>
+						</li>
 					</div>
 				</ul>
-				
+				<div id="expandedSidebar">
+					<div class="nav-item" id="tags">
+						<div class="nav-item mt-2"><h5 class="nav-heading">Tags</h5></div>
+						<div class="tag_wrapper">
+							<div class="select-btn">
+								<span class="sBtn-text">Select tag</span>
+							</div>
+							<ul class="options" id="option-ul">
+								<li class="option"><span class="color-box"></span><span class="option-text">Github</span></li>
+								<li class="option"><span class="color-box"></span><span class="option-text">Github</span></li>
+								<li class="option"><span class="color-box"></span><span class="option-text">Github</span></li>
+							</ul>
+							<button class="nav-link expanded-nav-btn">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									height="32"
+									viewBox="0 -960 960 960"
+									width="32"
+									class="nav-icon"
+								>
+									<path fill="white" d="M450-200v-250H200v-60h250v-250h60v250h250v60H510v250h-60Z" />
+								</svg>
+								<span>Add Tag</span>
+							</button>
+						</div>
+						<div class="nav-item mt-2"><h5 class="nav-heading">Selected tags</h5></div>
+						<div id="selectedTags">
+							<div class="tag">
+								<div><span class="tag-color-inner"></span></div>
+								<div class="tag-text-outer"><span class="tag-text-inner">Kritisch</span></div>
+							</div>
+						</div>
+						<div class="nav-item mt-2"><h5 class="nav-heading">Create new tag</h5></div>
+						<div class="tag_wrapper">
+							<div id="input_tag_wrapper">
+								<input type="color" name="" id="tag_color" />
+								<input type="text" name="" placeholder="Tag name" id="tag_name" />
+							</div>
+
+							<button class="nav-link expanded-nav-btn" id="createnewtag">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									height="32"
+									viewBox="0 -960 960 960"
+									width="32"
+									class="nav-icon"
+								>
+									<path fill="white" d="M450-200v-250H200v-60h250v-250h60v250h250v60H510v250h-60Z" />
+								</svg>
+								<span>Create new tag</span>
+							</button>
+						</div>
+					</div>
+				</div>
 			</aside>
 			<div id="main-container">
 				<form action="/add" method="post" id="thread_form">
@@ -237,6 +292,9 @@
 			</select>
 			<div class="selectInputWrapper"><input type="checkbox" name="" class="selectInputElement" /></div>
 		</div>
+	</template>
+	<template>
+		<li class="option"><span class="color-box"></span><span class="option-text"></span></li>
 	</template>
 	<input type="file" name="" id="uploadinput" hidden accept=".csv" />
 </html>
